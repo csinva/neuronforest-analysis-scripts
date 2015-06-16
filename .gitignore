@@ -2,3 +2,8 @@ matscripts
 testData
 *~
 *pyc
+data
+dataSmall
+*.idea
+*.raw
+
