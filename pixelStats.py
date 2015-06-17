@@ -1,7 +1,6 @@
 import numpy as np
 def pixelSquareError(affTrue,affEst):
   err=0
-  print "calculating pixel error..."
   affTrue = affTrue.flatten()
   affEst = affEst.flatten()
   err = np.dot((affEst-affTrue).transpose(),(affEst-affTrue)) / len(affEst)
@@ -10,7 +9,6 @@ def pixelSquareError(affTrue,affEst):
   return err
 
 def pixelStatsForThreshold(affTrue,affEst,threshold):
-  print "calculating pixel stats for threshold..."
   affTrue = affTrue.flatten()
   affEst = affEst.flatten()
   p_err = 1-np.sum((affEst>threshold)==affTrue)/((float)(len(affEst)))
