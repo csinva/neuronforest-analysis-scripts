@@ -3,7 +3,6 @@
 import struct
 import numpy as np
 def loadAffs(filename, dims):
-  print "loading affs..."
   counter=0
   labels = np.zeros(3*np.prod(dims))
   predictions = np.zeros(3*np.prod(dims))

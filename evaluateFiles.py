@@ -8,6 +8,7 @@ def evaluateFiles(root,dirs):
     initialThresholds = np.arange(-.5,1.6,.4) #-0.5:0.4:1.5;
     #initialThresholds = [.5];
     minStep = .002
+    # minStep=.2
     f = open(root+'/errOverview.txt','w')
 
     # read description and dimensions
@@ -36,14 +37,11 @@ def evaluateFiles(root,dirs):
 
     datafile = open(root+'/errData.pkl','wb')
     pickle.dump([(pThresholds, pErr, pTp, pFp, pPos, pNeg, pSqErr),(minThresholdIdx,maxThresholdIdx)],datafile)
-    #pickle.dump(min_threshold_idx,max_threshold_idx,datafile)
     datafile.close()
 
 
     # make plots
-    makeErrorCurves((pThresholds, pErr, pTp, pFp, pPos, pNeg, pSqErr),(minThresholdIdx,maxThresholdIdx))
-
-    #evaluateThresholds()
+    #makeErrorCurves((pThresholds, pErr, pTp, pFp, pPos, pNeg, pSqErr),(minThresholdIdx,maxThresholdIdx))
 
 def evaluateFilesAtThresholds(files, dims, thresholds, randOrPixel, minStep):
     # initialize all variables
@@ -72,11 +70,22 @@ def evaluateFilesAtThresholds(files, dims, thresholds, randOrPixel, minStep):
         bestErr = np.min(err) # todo: this is unnecessary
         bestIdx = np.argmin(err)
 
-    print "Thresholds:",thresholds[0],":",thresholds[-1],"\tBest",randOrPixel,"=",bestErr
-    #Call again with new thresholds, append results
+
+    #Call again with new thresholds, append results todo: make it load aff graph less
+    step = thresholds[1] - thresholds[0]
+    bestThreshold = thresholds[bestIdx]
+    print "Thresholds:",thresholds[0],":",step,":",thresholds[-1],"\tBest",randOrPixel,"=",bestErr
+    if step>minStep:
+        newStep = 2*step/(len(thresholds)-1)
+        innerThresholds=np.arange(bestThreshold-step,bestThreshold+step+minStep/2,newStep)  #this could yield slightly different results than matlab code
+        thresholds_, err_, tp_, fp_,_,_,_ = evaluateFilesAtThresholds(files,dims,innerThresholds,'pixel',minStep)
+
+        thresholds = np.concatenate([thresholds[0:bestIdx],thresholds_,thresholds[bestIdx:-1]])
+        err = np.concatenate([err[0:bestIdx],err_,err[bestIdx:-1]])
+        tp = np.concatenate([tp[0:bestIdx],tp_,tp[bestIdx:-1]])
+        fp = np.concatenate([fp[0:bestIdx],fp_,fp[bestIdx:-1]])
 
     return thresholds,err,tp,fp,pos,neg,pSqErr
-    #return -1
 
 def evaluateFileAtThresholds(file,thresholds,dims,randOrPixel):
     affTrue,affEst = loadAffs(file,dims)
