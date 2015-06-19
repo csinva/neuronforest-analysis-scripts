@@ -1,6 +1,7 @@
 import numpy as np
 from loadAffs import loadAffs
 from pixelStats import pixelSquareError,pixelStatsForThreshold
+from randStats import randStatsForThreshold
 from makeErrorCurves import makeErrorCurves
 import pickle
 def evaluateFiles(root,dirs):
@@ -20,9 +21,10 @@ def evaluateFiles(root,dirs):
         with open(dirs[dimCount]+'/dimensions.txt', 'r') as f2:
             dim = f2.read()
         dims[dimCount,:] = dim.split(" ")
-        dimCount=dimCount+1
 
     pThresholds, pErr, pTp, pFp, pPos, pNeg, pSqErr = evaluateFilesAtThresholds(dirs,dims,initialThresholds,'pixel',minStep)
+    #rThresholds, rErr, rTp, rFp, rPos, rNeg, _ = evaluateFilesAtThresholds(dirs,dims,initialThresholds,'rand',minStep)
+
     minThresholdIdx = np.floor((len(initialThresholds)-1)/2)
     maxThresholdIdx = np.ceil(len(pThresholds) - 1 - minThresholdIdx)
 
@@ -64,7 +66,11 @@ def evaluateFilesAtThresholds(files, dims, thresholds, randOrPixel, minStep):
     neg = np.sum(neg*nExamples,axis=0)
     pSqErr = np.sum(pSqErr*nExamples,axis=0)/np.sum(nExamples)
     if randOrPixel=="rand":
-        print "rand calculation"
+        prec = tp/(tp+fp)
+        rec = tp/pos
+        err = 2*(prec*rec)/(prec+rec) # todo: this can be done in parallel
+        bestErr = np.max(err)
+        bestIdx = np.argmax(err)
     else:
         err = np.sum(err*nExamples,axis=0)/np.sum(nExamples)
         bestErr = np.min(err) # todo: this is unnecessary
@@ -91,7 +97,9 @@ def evaluateFileAtThresholds(file,thresholds,dims,randOrPixel):
     affTrue,affEst = loadAffs(file,dims)
     nExamples = (affTrue.size)/3
     if(randOrPixel=="rand"):
-        print "rand"
+        pSqErr=-1
+        #compTrue = connectedComponents(affTrue)
+        compTrue = np.zeros(dims)
     else:
         pSqErr=pixelSquareError(affTrue,affEst) #todo: make this inline
     err = np.empty([1,len(thresholds)])
@@ -100,7 +108,7 @@ def evaluateFileAtThresholds(file,thresholds,dims,randOrPixel):
     for i in range(len(thresholds)):
         threshold = thresholds[i]
         if(randOrPixel=="rand"):
-            print "rand"
+            err[0,i],tp[0,i],fp[0,i],pos,neg = randStatsForThreshold(affTrue,affEst,threshold)  # this might give an error for making pos, neg nan (if(~isnan(pos_)) pos=pos_; end)
         else:
             err[0,i],tp[0,i],fp[0,i],pos,neg = pixelStatsForThreshold(affTrue,affEst,threshold) #todo: pos, neg can be taken out of the loop (put with pSqErr)
 
