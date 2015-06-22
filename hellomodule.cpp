@@ -9,21 +9,33 @@ cmpSz			the sizes of each component
 */
 #include <Python.h>
 static PyObject *
-spam_system(PyObject *self, PyObject *args)
+static PyObject * hello_wrapper(PyObject * self, PyObject * args)
 {
-    const char *command;
-    int sts;
+  char * input;
+  char * result;
+  PyObject * ret;
 
-    if (!PyArg_ParseTuple(args, "s", &command))
-        return NULL;
-    sts = system(command);
-    return Py_BuildValue("i", sts);
+  // parse arguments
+  if (!PyArg_ParseTuple(args, "s", &input)) {
+    return NULL;
+  }
+
+  // run the actual function
+  result = hello(input);
+
+  // build the resulting string into a Python object.
+  ret = PyString_FromString(result);
+  free(result);
+
+  return ret;
 }
 
-static PyMethodDef SpamMethods[] = {
-    ...
-    {"system",  spam_system, METH_VARARGS,
-     "Execute a shell command."},
-    ...
-    {NULL, NULL, 0, NULL}        /* Sentinel */
+static PyMethodDef HelloMethods[] = {
+ { "hello", hello_wrapper, METH_VARARGS, "Say hello" },
+ { NULL, NULL, 0, NULL }
 };
+
+DL_EXPORT(void) inithello(void)
+{
+  Py_InitModule("hello", HelloMethods);
+}
