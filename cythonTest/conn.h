@@ -6,4 +6,6 @@
 
 void printlist(std::list<int> &);
 
+int printArr(double * conn);
+
 #endif

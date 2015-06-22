@@ -59,10 +59,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 		|| (nhood1_dims[0] != conn_dims[conn_num_dims-1])){
 		mexErrMsgTxt("nhood1 and conn dimensions don't match");
 	}
-	const mxArray * nhood2 = prhs[1];
-	const mwSize nhood2_num_dims = mxGetNumberOfDimensions(nhood2);
-	const mwSize * nhood2_dims = mxGetDimensions(nhood2);
-	const double * nhood2_data = mxGetPr(nhood2);
+	//nhood 2 is completely ignored
+
 	// output mapping
 	mxArray * label;
 	mwSize label_num_dims = conn_num_dims-1;
