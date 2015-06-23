@@ -40,5 +40,11 @@ plt.show()
 dataRoot = 'dataSmall/000'
 dims = [73,73,73]
 affTrue, affEst = loadAffs(dataRoot,dims)
+compOutput = np.zeros((10,10,10))
 #list_test(dims)
-arr_test(affTrue,np.eye(3))
+print compOutput[0,0,0:5]
+cmpSize = [1,2]
+cmpSize = arr_test(affTrue,np.eye(3),compOutput,cmpSize)
+print "outputs..."
+print compOutput[0,0,0:5]
+print cmpSize
