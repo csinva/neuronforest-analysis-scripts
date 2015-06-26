@@ -38,6 +38,7 @@ void printlist(list<int> &l){
 }
 
 list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, double * outputComp, list<int> * cmpSz){
+/*
     //test inputs
     int ccnbrs[4]={0,0,0,0};
     const int ccdims[4] ={73,73,73,3};
@@ -73,6 +74,7 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
     for (int i=15980;i<16000;i++){
         cout << i << " " << conn[i] << endl;
     }
+*/
 
     //reading inputs
     const int conn_num_dims = 4;
@@ -110,22 +112,18 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
     std::stack<int> S;
     std::vector<int> component_sizes;
     for (int ind=0; ind<label_num_elements; ind++){
-        cout << "starting ";
+        //cout << "starting ";
         if (discovered[ind]==false){
-            cout << "checking ";
+            //cout << "checking ";
             S.push(ind);
             component_sizes.push_back(1);
-            cout << "comp szs " << component_sizes.size() << endl;
-
-            if(component_sizes.size()>40)
-                exit(0);
-
+            //cout << "comp szs " << component_sizes.size() << endl;
             label_data[ind]=component_sizes.size();
             discovered[ind]=true;
             int current;
             while (!S.empty()){
-                cout << "\tind: " << ind << " ";
-                cout << "S ";
+                //cout << "\tind: " << ind << " ";
+                //cout << "S ";
                 current=S.top();
                 int cur_pos[label_num_dims];
                 ind2sub(current, label_num_dims, label_dims, cur_pos);
@@ -134,9 +132,11 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
                 int nbor_ind;
                 int new_pos[label_num_dims];
                 int new_ind;
+                //cout << "0 ";
                 for (int i=0; i<label_num_dims; i++){
                     nbor[i]=cur_pos[i];
                 }
+                //cout << "1 " ;
                 for (int i=0; i<nhood1_dims[0]; i++){
                     nbor[conn_num_dims-1]=i;
                     nbor_ind=sub2ind(nbor,conn_num_dims,conn_dims);
@@ -160,7 +160,9 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
                         }
                     }
                 }
+                //cout << "2 ";
                 for (int i=0; i<nhood1_dims[0]; i++){
+                    //cout << "2_1 ";
                     bool OOB=false;
                     for (int j=0; j<label_num_dims; j++){
                         int check=cur_pos[j]- (int) nhood1_data[i+j*nhood1_dims[0]];
@@ -170,6 +172,7 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
                         new_pos[j]=check;
                     }
                     if (!OOB){
+                        //cout << "2_2 ";
                         for (int j=0; j<label_num_dims; j++){
                             nbor[j]=new_pos[j];
                         }
@@ -186,7 +189,7 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
                         }
                     }
                 }
-                cout << "ending..." << S.empty() <<endl;
+                //cout << "ending..." << S.empty() <<endl;
             }
         }
     }
@@ -198,8 +201,19 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
         //psizes[i]=(uint32_t)component_sizes[i];
     }
 
-    outputComp[0] = 3;
-    (*cmpSz).push_back(5);
+    // return outputComp
+    //outputComp=(double*)label_data;
+    //outputComp[0] = 3;
+
+    for (int i=0; i<label_num_elements/73/73; i++){
+        //outputComp[i]=label_data[i];
+        cout << label_data[i] << " ";
+        //psizes[i]=(uint32_t)component_sizes[i];
+    }
+    outputComp = (double *) label_data;
+
+
+    //(*cmpSz).push_back(5);
 
     cout << "finished, returning..." << endl;
     return compSizes;
