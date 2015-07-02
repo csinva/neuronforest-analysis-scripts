@@ -19,9 +19,12 @@ affTrue = np.asfortranarray(affTrue)
 nhood = np.eye(3)
 nhood = nhood.astype(dtype='d',order='F')
 cmpSize = []
-cmpSize = arr_test(affTrue,nhood,compOutput,cmpSize)
+comp,cmpSize = arr_test(affTrue,nhood,compOutput,cmpSize)
 print "returned"
 print cmpSize
+print "comp size:",np.shape(comp)
+print "comp max:",np.max(comp)
+print "comp min:",np.min(comp)
 # print "outputs..."
 # print compOutput[0,0,0:5]
 # print cmpSize

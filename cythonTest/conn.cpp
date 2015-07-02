@@ -207,7 +207,7 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
 
     for (int i=0; i<label_num_elements/73/73; i++){
         //outputComp[i]=label_data[i];
-        cout << label_data[i] << " ";
+        //cout << label_data[i] << " ";
         //psizes[i]=(uint32_t)component_sizes[i];
     }
     outputComp = (double *) label_data;
