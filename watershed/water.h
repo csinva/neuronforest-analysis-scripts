@@ -6,6 +6,5 @@
 
 void printlist(std::list<int> &);
 
-std::list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, double * outputComp, std::list<int> * l);
-
+void watershed(double * conn, double * nhood,double * comp, double* growMask, double lowThreshold, int dimX,int dimY,int dimZ, double * outputComp);
 #endif

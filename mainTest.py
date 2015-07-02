@@ -2,22 +2,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 from loadAffs import loadAffs
 import sys
+sys.path.append('connectedComponents')
 sys.path.append('watershed')
-from waterDefs import arr_test
+from connDefs import arr_test
+from waterDefs import markerWatershed
 
 dataRoot = 'dataSmall/000'
 dims = [73,73,73]
 affTrue, affEst = loadAffs(dataRoot,dims)
 compOutput = np.zeros((73,73,73))
-#list_test(dims)
-#print compOutput[0,0,0:5]
-# affTrue = np.transpose(affTrue)
 affTrue = np.asfortranarray(affTrue)
 affEst = np.asfortranarray(affEst)
-# affTrue = affTrue.astype(dtype='d',order='F')
-# print affEst[0,0,0:5,0]
-nhood = np.eye(3)
-nhood = nhood.astype(dtype='d',order='F')
+
+nhood = np.eye(3).astype(dtype='d',order='F')
 cmpSize = []
 thresh=.97
 
@@ -27,6 +24,17 @@ print cmpSize
 print "comp size:",np.shape(comp)
 print "comp max:",np.max(comp)
 print "comp min:",np.min(comp)
+
+
+nhood = np.eye(3).astype(dtype='d',order='F')
+#growMask = comp==0
+#growMask=growMask.astype('float',order='F')
+
+growMask=np.zeros((73,73,73))
+lowThreshold=0.0
+watershed = np.zeros((73,73,73))
+comp = comp.astype('float')
+watershed = markerWatershed(affEst,nhood,comp,growMask,lowThreshold,watershed)
 # print "outputs..."
 # print compOutput[0,0,0:5]
 # print cmpSize

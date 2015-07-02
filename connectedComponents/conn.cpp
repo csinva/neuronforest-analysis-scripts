@@ -214,8 +214,6 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
 
 
     //(*cmpSz).push_back(5);
-
-    cout << "finished, returning..." << endl;
     return compSizes;
 
 }
