@@ -2,9 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from loadAffs import loadAffs
 import sys
-sys.path.append('cythonTest')
-from connDefs import list_test
-from connDefs import arr_test
+sys.path.append('watershed')
+from waterDefs import arr_test
 
 dataRoot = 'dataSmall/000'
 dims = [73,73,73]
@@ -14,13 +13,16 @@ compOutput = np.zeros((73,73,73))
 #print compOutput[0,0,0:5]
 # affTrue = np.transpose(affTrue)
 affTrue = np.asfortranarray(affTrue)
+affEst = np.asfortranarray(affEst)
 # affTrue = affTrue.astype(dtype='d',order='F')
 # print affEst[0,0,0:5,0]
 nhood = np.eye(3)
 nhood = nhood.astype(dtype='d',order='F')
 cmpSize = []
-comp,cmpSize = arr_test(affTrue,nhood,compOutput,cmpSize)
-print "returned"
+thresh=.97
+
+affEst=(affEst>thresh).astype('float')
+comp,cmpSize = arr_test(affEst,nhood,compOutput,cmpSize)
 print cmpSize
 print "comp size:",np.shape(comp)
 print "comp max:",np.max(comp)

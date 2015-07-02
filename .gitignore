@@ -6,4 +6,4 @@ data
 dataSmall
 *.idea
 *.raw
-
+*Defs.cpp

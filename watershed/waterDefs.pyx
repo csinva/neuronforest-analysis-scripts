@@ -2,13 +2,13 @@ from libcpp.list cimport list
 import numpy as np
 cimport numpy as np
 
-cdef extern from "conn.h":
+cdef extern from "water.h":
     void printlist(list[int] &)
 
 def list_test(list[int] l):
     printlist(l)
 
-cdef extern from "conn.h":
+cdef extern from "water.h":
     list[int] printArr(double * conn, double * nhood,int dimX,int dimY,int dimZ, double * outputComp, list[int] * l)
 
 def arr_test(np.ndarray[np.double_t,ndim=4] conn, np.ndarray[np.double_t,ndim=2] nhood, np.ndarray[np.double_t,ndim=3] comp, list[int] cmpSz): #todo: no need for fortran array
@@ -43,10 +43,10 @@ def arr_test(np.ndarray[np.double_t,ndim=4] conn, np.ndarray[np.double_t,ndim=2]
     numObj = len(c)
     #print numObj
     renum[reverseRenum]=np.arange(1,numObj+1)
-    print "renum:",renum
-    print "shape:",np.shape(compReturn)
-    print "max comp:",np.max(compReturn)
-    print "min comp:",np.min(compReturn)
+    # print "renum:",renum
+    # print "shape:",np.shape(compReturn)
+    # print "max comp:",np.max(compReturn)
+    # print "min comp:",np.min(compReturn)
     #a = renum[a]
     for i in range(dims[0]):
         for j in range(dims[1]):
