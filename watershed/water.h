@@ -4,7 +4,5 @@
 #include <iostream>
 #include <list>
 
-void printlist(std::list<int> &);
-
 void watershed(double * conn, double * nhood,double * comp, double* growMask, double lowThreshold, int dimX,int dimY,int dimZ, double * outputComp);
 #endif

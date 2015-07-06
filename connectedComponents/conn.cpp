@@ -78,7 +78,7 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
 
     //reading inputs
     const int conn_num_dims = 4;
-    int dims[4] = {dimZ,dimY,dimX,3};
+    int dims[4] = {dimX,dimY,dimZ,3};
     const int * conn_dims = &dims[0];
     const int conn_num_elements = dimX*dimY*dimZ*3;
     //const mxLogical * conn_data = mxGetLogicals(conn);
