@@ -97,7 +97,7 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
     for (int i=0; i<(conn_num_dims-1); i++){
         label_dims[i] = conn_dims[i];
     }
-    int* label_data = (int *)  label;
+    double* label_data = (double *)  label;
     int label_num_elements = dimX*dimY*dimZ;
 
     // initialize colors (a node is either discovered or not), maybe change to integer?
@@ -205,11 +205,14 @@ list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, 
     //outputComp=(double*)label_data;
     //outputComp[0] = 3;
 
-    for (int i=0; i<label_num_elements/73/73; i++){
+    int sum=0;
+    //for (int i=0; i<label_num_elements; i++){
         //outputComp[i]=label_data[i];
         //cout << label_data[i] << " ";
         //psizes[i]=(uint32_t)component_sizes[i];
-    }
+      //  sum+=label_data[i];
+    //}
+    //cout << "very initial sum: " << sum << endl;
     outputComp = (double *) label_data;
 
 

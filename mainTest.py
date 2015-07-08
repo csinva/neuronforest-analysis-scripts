@@ -16,15 +16,25 @@ affEst = np.asfortranarray(affEst)
 
 nhood = np.eye(3).astype(dtype='d',order='F')
 cmpSize = []
-thresh=.97
+thresh=.9700
+'''
+print "sum affTrue:",np.sum(affTrue)
+comp,cmpSize = arr_test(affTrue,nhood,compOutput,cmpSize)
+print cmpSize
+print "comp size:",np.shape(comp)
+print "comp max:",np.max(comp)
+print "comp min:",np.min(comp)
+print "comp sum:",np.sum(comp)
 
+'''
 affEst=(affEst>thresh).astype('float')
+print "sum affEst:",np.sum(affEst)
 comp,cmpSize = arr_test(affEst,nhood,compOutput,cmpSize)
 print cmpSize
 print "comp size:",np.shape(comp)
 print "comp max:",np.max(comp)
 print "comp min:",np.min(comp)
-
+print "comp sum:",np.sum(comp)
 
 nhood = np.eye(3).astype(dtype='d',order='F')
 #growMask = comp==0
@@ -35,6 +45,4 @@ lowThreshold=0.0
 watershed = np.zeros((73,73,73))
 comp = comp.astype('float')
 watershed = markerWatershed(affEst,nhood,comp,growMask,lowThreshold,watershed)
-# print "outputs..."
-# print compOutput[0,0,0:5]
-# print cmpSize
+
