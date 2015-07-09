@@ -7,3 +7,7 @@ dataSmall
 *.idea
 *.raw
 *Defs.cpp
+out
+lib
+.idea
+*.iml
