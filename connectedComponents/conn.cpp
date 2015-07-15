@@ -37,7 +37,7 @@ void printlist(list<int> &l){
     cout << endl;
 }
 
-list<int> printArr(double * conn, double * nhood, int dimX, int dimY, int dimZ, double * outputComp, list<int> * cmpSz){
+list<int> connectedComponentsCPP(double * conn, double * nhood, int dimX, int dimY, int dimZ, double * outputComp, list<int> * cmpSz){
 /*
     //test inputs
     int ccnbrs[4]={0,0,0,0};

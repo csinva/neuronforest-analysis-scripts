@@ -9,11 +9,11 @@ def list_test(list[int] l):
     printlist(l)
 
 cdef extern from "conn.h":
-    list[int] printArr(double * conn, double * nhood,int dimX,int dimY,int dimZ, double * outputComp, list[int] * l)
+    list[int] connectedComponentsCPP(double * conn, double * nhood,int dimX,int dimY,int dimZ, double * outputComp, list[int] * l)
 
-def arr_test(np.ndarray[np.double_t,ndim=4] conn, np.ndarray[np.double_t,ndim=2] nhood, np.ndarray[np.double_t,ndim=3] comp, list[int] cmpSz): #todo: no need for fortran array
+def connectedComponents(np.ndarray[np.double_t,ndim=4] conn, np.ndarray[np.double_t,ndim=2] nhood, np.ndarray[np.double_t,ndim=3] comp, list[int] cmpSz): #todo: no need for fortran array
     dims = np.shape(conn)
-    c = printArr(&conn[0,0,0,0], &nhood[0,0],dims[0],dims[1],dims[2],&comp[0,0,0],&cmpSz)
+    c = connectedComponentsCPP(&conn[0,0,0,0], &nhood[0,0],dims[0],dims[1],dims[2],&comp[0,0,0],&cmpSz)
     #compOut = <int *> comp.data
     compReturn=comp.astype(int) #todo make it so it is int the entire time
     reverseRenum = np.argsort(c)[::-1]
