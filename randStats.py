@@ -31,7 +31,7 @@ def randIndex(compTrue, compEst, normalize=False):  # todo: this can store less 
     # this computes the fraction of each true component
     # overlapped by an estimated component
     # the sparse() is used to compute a histogram over object pairs
-    overlap = sp.sparse(compTrue, compEst, 1, maxCompTrue, maxCompEst);
+    overlap = sp.sparse(compTrue, compEst, 1, maxCompTrue, maxCompEst)
 
     # compute the effective sizes of each set of objects
     # computing it from the overlap matrix normalizes the sizes

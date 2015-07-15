@@ -19,9 +19,9 @@ def markerWatershed(np.ndarray[np.double_t,ndim=4] conn, np.ndarray[np.double_t,
     sizes = []
     for i in range(minW,maxW+1):
         sizes.append(np.sum(outputComp==i))
-    print '406         466         546        2476        3599        7287       13796       32497       45602       48722      233394'
+    # print np.array(sizes)
     print np.sort(np.array(sizes))#[-10:]
-    print "379545?"
+    print "    219   478   945   2739   379545"
     if np.sort(np.array(sizes))[-1]==379545:
         print "SUCCESS"
     print "size:",len(sizes)

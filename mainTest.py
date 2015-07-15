@@ -6,6 +6,7 @@ sys.path.append('connectedComponents')
 sys.path.append('watershed')
 from connDefs import arr_test
 from waterDefs import markerWatershed
+from randStats import randIndex
 
 dataRoot = 'dataSmall/000'
 dims = [73,73,73]
@@ -20,7 +21,7 @@ thresh=.97
 affEst = affEst.astype(dtype='d',order='F') # this has an effect
 affEstThresh=(affEst>thresh).astype(dtype='d')
 print "sum affEst:",np.sum(affEstThresh)
-comp,cmpSize = arr_test(affTrue,nhood,compOutput,cmpSize)
+comp,cmpSize = arr_test(affEstThresh,nhood,compOutput,cmpSize)
 LEN = min(10,cmpSize.size)
 print cmpSize[0:LEN-1],'...'
 print "comp sum:",np.sum(comp)
@@ -29,17 +30,33 @@ print "comp sum:",np.sum(comp)
 
 # transpose doesn't do anything
 affEst = affEst.astype(dtype='d',order='F')
-nhood = -1*np.eye(3).astype(dtype='d') #.transpose()
-comp = comp.astype(dtype='d',order='F') #.transpose((2,0,1))
-growMask= (comp==0).astype(dtype='d',order='F')
+nhood = -1*np.eye(3).astype(dtype='d')
+comp = comp.astype(dtype='d',order='F') #possible that this is already stored in memory as F, shouldn't be converted
+compE = np.zeros((73,73,73)).astype(dtype='d',order='F')
+print '--------------------ALIGNING---------------------------------------\n'
+for x in range(73):
+    for y in range(73):
+        for z in range(73):
+            arr = (z,y,x)
+            compE[arr]=comp[x,y,z]
+# affEst is properly aligned
+print "sum",np.sum(affEst)
+print affEst[0:10,0,0,0]
+print np.sum(affEst[0,0,:,0])
+
+#compT is properly aligned with z,y,x
+print compE[0,0,0:10]
+print compE[1:20,0,0]
+print np.sum(compE[0,0,:])
+print '-----------------------------------------------------------\n'
+
+growMask= (compE==0).astype(dtype='d',order='F')
 watershed = np.zeros((73,73,73)).astype(dtype='d',order='F')
 print "growMask sum:",np.sum(growMask)
 
-watershed = markerWatershed(affTrue,nhood,comp,growMask,0,watershed) #putting in affEst or affTrue doesn't matter here
+watershed = markerWatershed(affEst,nhood,compE,growMask,0,watershed)
 
 print "watershed shape:",watershed.shape
-print "watershed sum:",np.sum(watershed)
-if np.sum(watershed)==1020717:
-    print "SUCCESS"
-else:
-    print "FAILURE"
+print "watershed sum:",np.sum(watershed) #this should be around 1020717
+
+#ri,stats = randIndex()

@@ -30,5 +30,4 @@ def arr_test(np.ndarray[np.double_t,ndim=4] conn, np.ndarray[np.double_t,ndim=2]
         for j in range(dims[1]):
             for k in range(dims[2]):
                 compReturn[i][j][k]=renum[compReturn[i][j][k]-1]
-    print "---returning---"
     return compReturn,c
