@@ -108,7 +108,6 @@ list<int> connectedComponentsCPP(double * conn, double * nhood, int dimX, int di
     }
 
     // run algorithm
-    cout << "running algorithm..." << endl;
     std::stack<int> S;
     std::vector<int> component_sizes;
     for (int ind=0; ind<label_num_elements; ind++){

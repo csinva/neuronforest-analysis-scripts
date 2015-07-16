@@ -1,25 +1,28 @@
 import numpy as np
 cimport numpy as np
-
-
+from connDefs import connectedComponents
+from waterDefs import markerWatershed
 
 def randStatsForThreshold(compTrue, affEst, threshold):
+    cdef int x,y,z
     if (np.all(affEst >= threshold) or np.all(affEst < threshold)):  # check for trivial case
         return (np.nan,) * 5
     else:
-        '''
-        compEst = connectedComponents(affEst > threshold)
-        watershed = markerWatershed(affEst, -np.eye(3), compEst)
-        ri, stats = randIndex(compTrue, watershed)
-        r_err = 1 - ri
-        r_tp = stats.truePos
-        r_fp = stats.falsePos
-        r_pos = stats.pos
-        r_neg = stats.neg
-        # r_fscore = 2 * (stats.prec * stats.rec) / (stats.prec + stats.rec);
-        return r_err, r_tp, r_fp, r_pos, r_neg
-        '''
-        return 3
+        nhood = np.eye(3)
+        affEstThresh=(affEst>threshold).astype(dtype='d')
+        compEst = connectedComponents(affEstThresh,nhood).astype(dtype='d',order='F')
+        compE = np.zeros((73,73,73)).astype(dtype='d',order='F')
+        compT = np.zeros((73,73,73)).astype(dtype='d',order='F')
+        for x in range(73):
+            for y in range(73):
+                for z in range(73):
+                    compE[z,y,x]=compEst[x,y,z]
+                    compT[z,y,x]=compTrue[x,y,z]
+
+        nhoodNeg = -1*np.eye(3)
+        watershed = markerWatershed(affEst,nhoodNeg,compE,0)
+        stats = randIndex(compT,watershed)
+        return 1-stats['ri'],stats['truePos'],stats['falsePos'],stats['pos'],stats['neg']
 
 
 def randIndex(compTrue, compEst, normalize=False):  # todo: this can store less values

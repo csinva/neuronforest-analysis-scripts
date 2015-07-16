@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 echo "STARTING BUILD"
 cd connectedComponents
-pwd
+printf "\n${PWD##*/}\n"
 python setup.py build_ext --inplace
 cd ..
 cd randStats
-pwd
+printf "\n${PWD##*/}\n"
 python setup.py build_ext --inplace
 cd ..
 cd watershed
-pwd
+printf "\n${PWD##*/}\n"
 python setup.py build_ext --inplace
 cd ..
-echo "FINISHED BUILD"
+printf "\nFINISHED BUILD\n"
