@@ -2,7 +2,6 @@ import numpy as np
 from loadAffs import loadAffs
 from pixelStats import pixelSquareError,pixelStatsForThreshold
 from randStats import randStatsForThreshold
-from makeErrorCurves import makeErrorCurves
 import pickle
 def evaluateFiles(root,dirs):
     print "evaluating files..."

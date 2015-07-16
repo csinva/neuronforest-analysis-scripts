@@ -1,13 +1,13 @@
 import numpy as np
-import scipy as sp
-from collections import namedtuple
-from sklearn import metrics
+cimport numpy as np
+
 
 
 def randStatsForThreshold(compTrue, affEst, threshold):
     if (np.all(affEst >= threshold) or np.all(affEst < threshold)):  # check for trivial case
         return (np.nan,) * 5
     else:
+        '''
         compEst = connectedComponents(affEst > threshold)
         watershed = markerWatershed(affEst, -np.eye(3), compEst)
         ri, stats = randIndex(compTrue, watershed)
@@ -18,6 +18,8 @@ def randStatsForThreshold(compTrue, affEst, threshold):
         r_neg = stats.neg
         # r_fscore = 2 * (stats.prec * stats.rec) / (stats.prec + stats.rec);
         return r_err, r_tp, r_fp, r_pos, r_neg
+        '''
+        return 3
 
 
 def randIndex(compTrue, compEst, normalize=False):  # todo: this can store less values
@@ -33,7 +35,10 @@ def randIndex(compTrue, compEst, normalize=False):  # todo: this can store less 
     #truePos: supposed to be same segment and is
     #falsePose: supposed to be different segment, but is predicted same
 
-    overlap = np.zeros((maxCompTrue+1,maxCompEst+1))
+    #overlap
+    cdef int i
+    cdef double pos,neg,truePos,trueNeg,falsePos,falseNeg, ri
+    cdef np.ndarray[double,ndim=2] overlap = np.zeros((maxCompTrue+1,maxCompEst+1))
     # print overlap.shape
     for i in range(compTrue.size):
         overlap[(compTrue[i],compEst[i])] += 1

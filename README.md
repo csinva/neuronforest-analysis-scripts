@@ -2,7 +2,7 @@
 Python scripts to replace Matlab for evaluation of error in connectome images and affinity graphs.
 
 **Building cpp methods**
-cd into the directory containing the cpp files and run: python setup.py build_ext --inplace
+In order to build all the cpp files into workable python modules, run the cythonBuild.sh script.
 
 **Setting Up Spark**
 

@@ -1,11 +1,7 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from loadAffs import loadAffs
 import sys
 sys.path.append('connectedComponents')
 sys.path.append('watershed')
-from connDefs import connectedComponents
-from waterDefs import markerWatershed
+sys.path.append('randStats')
 from randStats import randIndex
 import scipy.io as sio
 import time
