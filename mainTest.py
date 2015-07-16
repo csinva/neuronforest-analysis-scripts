@@ -67,5 +67,9 @@ print "watershed sum:",np.sum(watershed) #this should be around 1020717
 data = sio.loadmat('matscripts/randSetup.mat')
 compTrue = data['compTrue']
 watershed = data['watershed']
+t0 = time.clock()
 stats = randIndex(compTrue,watershed)
+tf = time.clock()
+
 print stats
+print "time:",tf-t0,"seconds"
