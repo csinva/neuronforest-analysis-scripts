@@ -13,9 +13,9 @@ from makeErrorCurves import makeErrorCurves
 import pickle
 def evaluateFiles(root,dirs):
     print "evaluating files..."
-    initialThresholdsPixel = np.arange(.1,.9,.1)#np.arange(-.5,1.6,.4) #-0.5:0.4:1.5;
-    initialThresholdsRand = np.arange(.96,1.0,.01)
     minStep = .0002
+    initialThresholdsPixel = np.arange(.2,.9+minStep,.1)#np.arange(-.5,1.6,.4) #-0.5:0.4:1.5;
+    initialThresholdsRand = np.arange(.96,1.0+minStep,.01)
     # minStep=.2
     f = open(root+'/errOverview.txt','w')
 
@@ -29,8 +29,8 @@ def evaluateFiles(root,dirs):
             dim = f2.read()
         dims[dimCount,:] = dim.split(" ")
 
-    rThresholds, rErr, rTp, rFp, rPos, rNeg, _ = evaluateFilesAtThresholds(dirs,dims,initialThresholdsRand,'rand',minStep)
     pThresholds, pErr, pTp, pFp, pPos, pNeg, pSqErr = evaluateFilesAtThresholds(dirs,dims,initialThresholdsPixel,'pixel',minStep)
+    rThresholds, rErr, rTp, rFp, rPos, rNeg, _ = evaluateFilesAtThresholds(dirs,dims,initialThresholdsRand,'rand',minStep)
 
     minThreshIdxPixel = (int) (np.floor((len(initialThresholdsPixel)-1)/2))
     maxThresIdxPixel = (int) (np.ceil(len(pThresholds) - 1 - minThreshIdxPixel))
@@ -57,36 +57,24 @@ def evaluateFiles(root,dirs):
                  (rThresholds, rErr, rTp, rFp, rPos, rNeg),(minThreshIdxRand,maxThreshIdxRand)],datafile)
     datafile.close()
 
-
     # make plots
     # makeErrorCurves((pThresholds, pErr, pTp, pFp, pPos, pNeg, pSqErr),(minThresholdIdx,maxThresholdIdx))
 
 def evaluateFilesAtThresholds(files, dims, thresholds, randOrPixel, minStep):
     # initialize all variables
-    err = np.empty([len(files),len(thresholds)])
-    tp = np.empty([len(files),len(thresholds)])
-    fp = np.empty([len(files),len(thresholds)])
-    pos = np.empty([len(files),1])
-    neg = np.empty([len(files),1])
-    pSqErr = np.empty([len(files),1])
-    nExamples = np.empty([len(files),1])
+    err,tp,fp = (np.empty([len(files),len(thresholds)]) for i in range(3))
+    pos,neg,pSqErr,nExamples = (np.empty([len(files),1]) for i in range(4))
 
     # This loop should be parallelized
     for i in range(len(files)):
         err[i,:], tp[i,:], fp[i,:], pos[i], neg[i], pSqErr[i], nExamples[i] = evaluateFileAtThresholds(files[i], thresholds, dims[i], randOrPixel)
 
-    # aggregate statistics over all examples todo: make this one line
-    # print "nExamples:",nExamples
-    # print "tp:",tp
-    tp = np.sum(tp*nExamples,axis=0)
-    # print "tp after:",tp
-    fp = np.sum(fp*nExamples,axis=0)
-    pos = np.sum(pos*nExamples,axis=0)
-    neg = np.sum(neg*nExamples,axis=0)
+    # aggregate statistics over all examples
+    sumOverExamples = lambda x: np.sum(x*nExamples,axis=0) #todo: don't keep redefining this
+    tp,fp,pos,neg = map(sumOverExamples,[tp,fp,pos,neg])
+
     pSqErr = np.sum(pSqErr*nExamples,axis=0)/np.sum(nExamples)
     if randOrPixel=="rand":
-        # print "tp:",tp
-        # print "fp:",fp
         prec = tp/(tp+fp)
         rec = tp/pos
         err = 2*(prec*rec)/(prec+rec) # todo: this can be done in parallel
@@ -103,18 +91,17 @@ def evaluateFilesAtThresholds(files, dims, thresholds, randOrPixel, minStep):
     bestThreshold = thresholds[bestIdx]
     print "Thresholds:",thresholds[0],":",step,":",thresholds[-1],"\tBest",randOrPixel,"=",bestErr
     if step>minStep:
-        newStep = 2*step/(len(thresholds)-1)
-        innerThresholds=np.arange(bestThreshold-step,bestThreshold+step+minStep/2,newStep)  #this could yield slightly different results than matlab code
+        newStep = 2*step/(len(thresholds))
+        innerThresholds=np.arange(bestThreshold-step,bestThreshold+step+minStep/100,newStep)  #this could yield slightly different results than matlab code
         if randOrPixel=="rand":
             thresholds_, err_, tp_, fp_,_,_,_ = evaluateFilesAtThresholds(files,dims,innerThresholds,'rand',minStep)
         else:
             thresholds_, err_, tp_, fp_,_,_,_ = evaluateFilesAtThresholds(files,dims,innerThresholds,'pixel',minStep)
 
-        thresholds = np.concatenate([thresholds[0:bestIdx],thresholds_,thresholds[bestIdx:-1]])
-        err = np.concatenate([err[0:bestIdx],err_,err[bestIdx:-1]])
-        tp = np.concatenate([tp[0:bestIdx],tp_,tp[bestIdx:-1]])
-        fp = np.concatenate([fp[0:bestIdx],fp_,fp[bestIdx:-1]])
-
+        thresholds = np.concatenate([thresholds[0:bestIdx],thresholds_,thresholds[bestIdx+1:-1]])
+        err = np.concatenate([err[0:bestIdx],err_,err[bestIdx+1:-1]])
+        tp = np.concatenate([tp[0:bestIdx],tp_,tp[bestIdx+1:-1]])
+        fp = np.concatenate([fp[0:bestIdx],fp_,fp[bestIdx+1:-1]])
     return thresholds,err,tp,fp,pos,neg,pSqErr
 
 def evaluateFileAtThresholds(file,thresholds,dims,randOrPixel):
