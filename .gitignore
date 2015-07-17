@@ -11,3 +11,7 @@ out
 lib
 .idea
 *.iml
+*/build
+*/*.c
+*/*.so
+*/*.nfs*

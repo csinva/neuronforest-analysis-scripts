@@ -8,6 +8,10 @@ cd randStats
 printf "\n${PWD##*/}\n"
 python setup.py build_ext --inplace
 cd ..
+cd pixelStats
+printf "\n${PWD##*/}\n"
+python setup.py build_ext --inplace
+cd ..
 cd watershed
 printf "\n${PWD##*/}\n"
 python setup.py build_ext --inplace

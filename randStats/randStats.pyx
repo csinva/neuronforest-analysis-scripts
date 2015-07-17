@@ -10,12 +10,13 @@ def randStatsForThreshold(compTrue, affEst, threshold):
     else:
         nhood = np.eye(3)
         affEstThresh=(affEst>threshold).astype(dtype='d')
+        dims = np.shape(compTrue)[0:3]
         compEst = connectedComponents(affEstThresh,nhood).astype(dtype='d',order='F')
-        compE = np.zeros((73,73,73)).astype(dtype='d',order='F')
-        compT = np.zeros((73,73,73)).astype(dtype='d',order='F')
-        for x in range(73):
-            for y in range(73):
-                for z in range(73):
+        compE = np.zeros(dims).astype(dtype='d',order='F')
+        compT = np.zeros(dims).astype(dtype='d',order='F')
+        for x in range(dims[0]):
+            for y in range(dims[1]):
+                for z in range(dims[2]):
                     compE[z,y,x]=compEst[x,y,z]
                     compT[z,y,x]=compTrue[x,y,z]
 

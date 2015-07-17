@@ -22,7 +22,7 @@ def loadAffs(filename, dims):
       predictions[counter] = struct.unpack('>f',chunk)[0]
       counter = counter+1
   dims_ = (dims[0],dims[1],dims[2],3)
-  affTrue = np.reshape(labels,dims_)
-  affEst = np.reshape(predictions,dims_)
+  affTrue = np.reshape(labels,dims_).astype(dtype='d',order='F')
+  affEst = np.reshape(predictions,dims_).astype(dtype='d',order='F')
   return (affTrue,affEst)
   
