@@ -7,9 +7,7 @@ from loadAffs import loadAffs
 from pixelStats import pixelSquareError,pixelStatsForThreshold
 from randStats import randStatsForThreshold
 from connDefs import connectedComponents
-from waterDefs import markerWatershed
-from randStats import randIndex
-from makeErrorCurves import makeErrorCurves
+from multiprocessing import Pool
 import pickle
 def evaluateFiles(root,dirs):
     print "evaluating files..."
@@ -66,9 +64,21 @@ def evaluateFilesAtThresholds(files, dims, thresholds, randOrPixel, minStep):
     pos,neg,pSqErr,nExamples = (np.empty([len(files),1]) for i in range(4))
 
     # This loop should be parallelized
+    '''
+    # Not parallel
     for i in range(len(files)):
         err[i,:], tp[i,:], fp[i,:], pos[i], neg[i], pSqErr[i], nExamples[i] = evaluateFileAtThresholds(files[i], thresholds, dims[i], randOrPixel)
+    '''
+    # Parallel implementation
+    p = Pool(len(files))
+    print "Parallel Pool:",len(files)
+    argsArr=[]
+    for i in range(len(files)):
+        argsArr.append([files[i], thresholds, dims[i], randOrPixel])
+    mappedValues = p.map(evaluateFileAtThresholds,argsArr)
 
+    for i in range(len(files)):
+        err[i,:], tp[i,:], fp[i,:], pos[i], neg[i], pSqErr[i], nExamples[i] = mappedValues[i]
     # aggregate statistics over all examples
     sumOverExamples = lambda x: np.sum(x*nExamples,axis=0) #todo: don't keep redefining this
     tp,fp,pos,neg = map(sumOverExamples,[tp,fp,pos,neg])
@@ -104,7 +114,8 @@ def evaluateFilesAtThresholds(files, dims, thresholds, randOrPixel, minStep):
         fp = np.concatenate([fp[0:bestIdx],fp_,fp[bestIdx+1:-1]])
     return thresholds,err,tp,fp,pos,neg,pSqErr
 
-def evaluateFileAtThresholds(file,thresholds,dims,randOrPixel):
+def evaluateFileAtThresholds(args):
+    file,thresholds,dims,randOrPixel=args
     affTrue,affEst = loadAffs(file,dims)
     affTrue,affEst=affTrue.astype(dtype='d',order='F'),affEst.astype(dtype='d',order='F')
     nExamples = (affTrue.size)/3
@@ -117,13 +128,25 @@ def evaluateFileAtThresholds(file,thresholds,dims,randOrPixel):
     err = np.empty([1,len(thresholds)])
     tp = np.empty([1,len(thresholds)])
     fp = np.empty([1,len(thresholds)])
+
     for i in range(len(thresholds)):
         threshold = thresholds[i]
         if(randOrPixel=="rand"):
-            err[0,i],tp[0,i],fp[0,i],pos,neg = randStatsForThreshold(compTrue,affEst,threshold)  # this might give an error for making pos, neg nan (if(~isnan(pos_)) pos=pos_; end)
+            #err[0,i],tp[0,i],fp[0,i],pos,neg = randStatsForThreshold(compTrue,affEst,threshold)  # this might give an error for making pos, neg nan (if(~isnan(pos_)) pos=pos_; end)
             # print threshold,tp[0,i]
+            pass
         else:
             err[0,i],tp[0,i],fp[0,i],pos,neg = pixelStatsForThreshold(affTrue,affEst,threshold) #todo: pos, neg can be taken out of the loop (put with pSqErr)
+    if(randOrPixel=="rand"):
+        # Parallel implementation
+        p = Pool(len(thresholds))
+        print "Parallel Pool:",len(thresholds)
+        argsArr=[]
+        for i in range(len(thresholds)):
+            argsArr.append([affTrue,affEst,threshold])
+        mappedValues = p.map(evaluateFileAtThresholds,argsArr)
+        for i in range(len(thresholds)):
+            err[i,:], tp[i,:], fp[i,:], pos[i], neg[i], pSqErr[i], nExamples[i] = mappedValues[i]
 
     return err,tp,fp,pos,neg,pSqErr,nExamples
 
