@@ -13,5 +13,4 @@ lib
 *.iml
 */build
 */*.c
-*/*.so
 */*.nfs*
