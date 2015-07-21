@@ -33,9 +33,8 @@ print label_set.shape
 def display(raw, label, pred, im_size):
     fig = plt.figure(figsize=(20,10))
     fig.set_facecolor('white')
-    ax1 = fig.add_subplot(1,3,1)
-    ax2 = fig.add_subplot(1,3,2)
-    ax3 = fig.add_subplot(1,3,3)
+    ax1,ax2,ax3 = fig.add_subplot(1,3,1),fig.add_subplot(1,3,2),fig.add_subplot(1,3,3)
+
     fig.subplots_adjust(left=0.2, bottom=0.25)
     depth0 = 0
     zoom0 = 250
@@ -44,21 +43,20 @@ def display(raw, label, pred, im_size):
     im1 = ax1.imshow(raw[1,:,:],cmap=cm.Greys_r)
     ax1.set_title('Raw Image')
 
-    im = np.zeros((250,250,3))
+    im = np.zeros((im_size,im_size,3))
     im[:,:,:]=label[:,:,1,:]
     im2 = ax2.imshow(im)
     ax2.set_title('Groundtruth')
 
-    im_ = np.zeros((250,250,3))
+    im_ = np.zeros((im_size,im_size,3))
     im_[:,:,:]=pred[:,:,1,:]
     im3 = ax3.imshow(im_)
     ax3.set_title('Predictions')
     
-    axcolor = 'blue'
-    axdepth = fig.add_axes([0.25, 0.3, 0.65, 0.03], axisbg=axcolor)
+    axdepth = fig.add_axes([0.25, 0.3, 0.65, 0.03], axisbg='white')
     #axzoom  = fig.add_axes([0.25, 0.15, 0.65, 0.03], axisbg=axcolor)
 
-    depth = Slider(axdepth, 'Min', 0, 250, valinit=depth0)
+    depth = Slider(axdepth, 'Min', 0, im_size, valinit=depth0,valfmt='%0.0f')
     #zoom = Slider(axmax, 'Max', 0, 250, valinit=max0)
     
     def update(val):
@@ -70,7 +68,6 @@ def display(raw, label, pred, im_size):
         im3.set_data(im_)
         fig.canvas.draw()
     depth.on_changed(update)
-    #smax.on_changed(update)
     plt.show()
 
 display(data_set, label_set, label_set, 250)
