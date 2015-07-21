@@ -1,5 +1,5 @@
 /* ctest.c */
-
+#include "clib.h"
 #include <iostream>
 using namespace std;
 
