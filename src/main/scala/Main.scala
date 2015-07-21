@@ -1,4 +1,5 @@
 import java.util.{Date, Calendar}
+import main.scala.helloc.HelloWorld
 import main.scala.jnahello.test.TestLibrary
 
 import scala.sys.process._
@@ -11,8 +12,13 @@ object Main {
 
   def main(args:Array[String]): Unit = {
     try {
+      // Can only call methods statically
       val pairCount = TestLibrary.PAIRS_COUNT
       println("PairsCount: "+pairCount)
+//      val testFunc = TestLibrary.testFunc(3)
+//      println("TestFunc: "+testFunc)
+      println("CTest:"+HelloWorld.test())
+/*
       val uptimeProc = Runtime.getRuntime().exec("uptime")
       println(uptimeProc)
       val in = new Scanner(uptimeProc.getInputStream())
@@ -40,6 +46,7 @@ object Main {
       }
       println("testOnly: "+testOnly)
       print("Chandan start..")
+      */
     } catch {
       case e:Throwable =>
         println("Error:\n" + e.toString)
