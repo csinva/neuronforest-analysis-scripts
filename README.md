@@ -18,8 +18,7 @@ java -jar jnaerator.jar -library Test Test.h -o . -v -noJar -noComp
 If you're in the top directory:
 java -jar jnaFull.jar Test.h -v -noJar -noComp -package main.scala.jnahello.test -f -convertBodies -forceNames -runtime BridJ
 
-**Hello World c**
-g++ -Wall -shared -fPIC -o libctest.so ctest.c
-javac -classpath jnaFull.jar HelloWorld.java
-java -classpath jnaFull.jar:. HelloWorld
-libctest.so must be under src
+**Compliling clib**
+In the src directory:
+g++ -Wall -shared -fPIC -o libctest.so ctest.cpp
+(libctest.so must be under src)
