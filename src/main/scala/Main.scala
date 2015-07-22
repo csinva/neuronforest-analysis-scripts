@@ -15,12 +15,16 @@ object Main {
       def helloFromC
       def arrTest(size: Int): Int
       def arrDouble(@Ptr arr: Long,@Ptr arr2: Long, size: Int): Int
+      def malisLoss(@Ptr dims: Long, @Ptr conn: Long, @Ptr nhood: Long, @Ptr seg: Long, margin: Double, pos: Boolean, @Ptr losses: Long, loss: Double, classErr: Double, randIndex: Double)
     }
     try {
-      val NUM = 100
+      val dimsList:Array[Int] =Array(4,4,4,3)
+      val NUM = dimsList(0)*dimsList(1)*dimsList(2)
       //inputs
+      val dims = allocateInts(4)
+      for(i<-0 until 4){dims(i)=dimsList(i)}
       val conn = allocateFloats(NUM) //needs dims
-      val nhood = allocateDoubles(9) //needs dims
+      val nhood = allocateDoubles(3)
       val seg = allocateInts(NUM)
       val margin:Double = .3
       val pos:Boolean = true
@@ -30,19 +34,14 @@ object Main {
       val classErr:Double = 0
       val randIndex:Double = 0
 
-      val testArr = allocateInts(NUM)
-
       for(i <- 0 until NUM){
         conn(i) = i
         seg(i) = i
       }
       val ctest: CLibScala = Native.loadLibrary("ctest", classOf[CLibScala]).asInstanceOf[CLibScala]
       ctest.helloFromC
-      println(ctest.arrDouble(Pointer.getPeer(seg),Pointer.getPeer(testArr),NUM))
-      for(i <- 0 until NUM){
-        print(testArr(i)+" ")
-      }
-
+      println(ctest.arrDouble(Pointer.getPeer(seg),Pointer.getPeer(seg),NUM))
+      ctest.malisLoss(Pointer.getPeer(dims),Pointer.getPeer(conn),Pointer.getPeer(nhood),Pointer.getPeer(seg),margin,pos,Pointer.getPeer(losses),loss,classErr,randIndex)
       //      println(ctest.arrSum(array1d,100))
 //      println(ctest.arrTest(5))
      //val ctest: ClibLibrary = Clib//Native.loadLibrary("ctest", classOf[ClibLibrary]).asInstanceOf[ClibLibrary]
