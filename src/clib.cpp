@@ -25,7 +25,7 @@ class AffinityGraphCompare{
 extern "C"
 {
     void helloFromC() {
-        cout << "C++ is working" << endl;
+        cout << "c++ is working" << endl;
     }
 
     int arrTest(int size){
@@ -48,9 +48,11 @@ extern "C"
      * All rights reserved
      */
      void malisLoss(const int* dims, const float* conn, const double* nhood, const int* seg, const double marginArg,
-     const bool posArg, float* losses, double lossReturn, double classErrReturn, double randIndexReturn){
+     const bool posArg, float* losses, double* lossReturn, double* classErrReturn, double* randIndexReturn){
+        cout << "malis is calculating" << endl;
      	/* input arrays */
-     	cout << "dims: "<<dims[0]<<" "<<dims[1]<<" "<<dims[2]<<" "<<dims[3]<<endl;
+//     	cout << "dims: "<<dims[0]<<" "<<dims[1]<<" "<<dims[2]<<" "<<dims[3]<<endl;
+//     	cout << "marginArg: "<<marginArg<< " posArg: "<<posArg<<endl;
          // 4d connectivity graph [y * x * z * #edges]
      	const int	conn_num_dims		= 4;
      	const int*	conn_dims			= dims;
@@ -208,8 +210,8 @@ extern "C"
     
         /* Return items */
         loss /= nPairNorm;
-        lossReturn = loss;
-        classErrReturn = (double)nPairIncorrect / (double)nPairNorm;
-        randIndexReturn = 1.0 - ((double)nPairIncorrect / (double)nPairNorm);
+        *lossReturn = loss;
+        *classErrReturn = (double)nPairIncorrect / (double)nPairNorm;
+        *randIndexReturn = 1.0 - ((double)nPairIncorrect / (double)nPairNorm);
      }
 }

@@ -14,9 +14,10 @@ Download the Bridj jar from http://search.maven.org/#artifactdetails|com.nativel
 **Setting Up JNA**
 Download jnaerator.jar (get a version with -shaded) and run the following on C++ files:
 java -jar jnaerator.jar -library Test Test.h -o . -v -noJar -noComp
+Include it as a lib in the lib folder.
 
 If you're in the top directory:
-java -jar jnaFull.jar Test.h -v -noJar -noComp -package main.scala.jnahello.test -f -convertBodies -forceNames -runtime BridJ
+java -jar jnaFull.jar clib.h -v -noJar -noComp -package main.scala  -f -convertBodies -forceNames -runtime BridJ
 
 **Compliling clib**
 In the src directory:
