@@ -14,11 +14,10 @@ extern "C"
         cout << "size: " << size << endl;
         return size;
     }
-    int arrSum(int* arr, int size){
-        int sum=0;
+    int arrDouble(int* arr, int* arr2, int size){
         for(int i=0;i<size;i++){
-            sum+=arr[i];
+            arr2[i]=arr[i]*2;
         }
-        return sum;
+        return 0;
     }
 }

@@ -10,29 +10,42 @@ import org.bridj.ann.Ptr
 object Main {
 
   def main(args:Array[String]): Unit = {
-    trait CTest extends Library {
+    // Can only call methods statically
+    trait CLibScala extends Library {
       def helloFromC
       def arrTest(size: Int): Int
-      def arrSum(@Ptr arr: Long, size: Int): Int
+      def arrDouble(@Ptr arr: Long,@Ptr arr2: Long, size: Int): Int
     }
     try {
-      // Can only call methods statically
+      val NUM = 100
+      //inputs
+      val conn = allocateFloats(NUM) //needs dims
+      val nhood = allocateDoubles(9) //needs dims
+      val seg = allocateInts(NUM)
+      val margin:Double = .3
+      val pos:Boolean = true
+      //outputs
+      val losses = allocateFloats(NUM)
+      val loss:Double = 0
+      val classErr:Double = 0
+      val randIndex:Double = 0
 
-//      val ctest: CTest = Native.loadLibrary("ctest", classOf[CTest]).asInstanceOf[CTest]
-//      val x:Library = Native.loadLibrary("ctest", classOf[CTest]).asInstanceOf[Library]
-//      ctest.helloFromC
+      val testArr = allocateInts(NUM)
 
-      val array1d = allocateInts(100)
-      for(i <- 0 to 99){
-        array1d(i) = i
+      for(i <- 0 until NUM){
+        conn(i) = i
+        seg(i) = i
       }
-//      println(ctest.arrSum(array1d,100))
+      val ctest: CLibScala = Native.loadLibrary("ctest", classOf[CLibScala]).asInstanceOf[CLibScala]
+      ctest.helloFromC
+      println(ctest.arrDouble(Pointer.getPeer(seg),Pointer.getPeer(testArr),NUM))
+      for(i <- 0 until NUM){
+        print(testArr(i)+" ")
+      }
+
+      //      println(ctest.arrSum(array1d,100))
 //      println(ctest.arrTest(5))
      //val ctest: ClibLibrary = Clib//Native.loadLibrary("ctest", classOf[ClibLibrary]).asInstanceOf[ClibLibrary]
-      val ctest: CTestJava = Native.loadLibrary("ctest", classOf[CTestJava]).asInstanceOf[CTestJava]
-      ctest.helloFromC()
-//      println(CLib.arrSum(array1d,100))
-      println(ctest.arrSum(Pointer.getPeer(array1d),100))
 
 
     } catch {
