@@ -67,38 +67,27 @@ class mycomp{
     
 //MAXIMUM spanning tree
 void watershed(double * conn, double * nhood,double * comp, double* growMask, double lowThreshold, int dimX,int dimY,int dimZ, double * outputComp){
-
-//void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
-															//const mxArray * conn = prhs[0];
-	const int conn_num_dims = 4;							//mxGetNumberOfDimensions(conn);
+	const int conn_num_dims = 4;
 	int connDims[4]={dimX,dimY,dimZ,3};
     const int * conn_dims  =&connDims[0];
-															//const int * conn_dims = mxGetDimensions(conn);
-	const int conn_num_elements = dimX*dimY*dimZ*3;			//mxGetNumberOfElements(conn);
-															//const float * conn_data =(const float *)mxGetData(conn);
-	const double * conn_data = conn;	 					//conn_data changed to double *
-															//const mxArray * nhood = prhs[1];
-	const int nhood_num_dims = 2;							//mxGetNumberOfDimensions(nhood);
+	const int conn_num_elements = dimX*dimY*dimZ*3;
+	const double * conn_data = conn;
+
+	const int nhood_num_dims = 2;
 	int nhoodDims[2] = {3,3};
 	const int * nhood_dims=&nhoodDims[0];
-															//const int * nhood_dims = mxGetDimensions(nhood);
+	const double * nhood_data = nhood;
 
-	const double * nhood_data = nhood;						//(const double *)mxGetData(nhood);
-    														//const mxArray * marker = prhs[2];
-	const int marker_num_dims = 3;							//mxGetNumberOfDimensions(marker);
-															//const int * marker_dims = mxGetDimensions(marker);
-
+	const int marker_num_dims = 3;
 	int markerDims[3]={dimX,dimY,dimZ};
 	const int * marker_dims  =&markerDims[0];
-	const int num_vertices = dimX*dimY*dimZ;				//mxGetNumberOfElements(marker);
+	const int num_vertices = dimX*dimY*dimZ;
 
-	const double * marker_data = comp;						//(const uint32_t *)mxGetData(marker);
-    														//const mxArray * grow_mask = prhs[3];
-	const int grow_mask_num_dims = 3;						//mxGetNumberOfDimensions(grow_mask);
-															//const int * grow_mask_dims = mxGetDimensions(grow_mask);
-															//const mxLogical * grow_mask_data = growMask;//(const mxLogical *)mxGetLogicals(grow_mask);
+	const double * marker_data = comp;
+	const int grow_mask_num_dims = 3;
+
 	const double * grow_mask_data = growMask;
-	const double low_threshold = lowThreshold;				//(const double) mxGetScalar(prhs[4]);
+	const double low_threshold = lowThreshold;
 
 	/*CHANDAN changes:
 		conn_data (float * -> double *)
@@ -110,7 +99,6 @@ void watershed(double * conn, double * nhood,double * comp, double* growMask, do
 	*/
 
 	// create disjoint sets
-															//   int num_vertices = marker_num_elements;	//conn_dims[0]*conn_dims[1]*conn_dims[2];
     std::vector<double> rank(num_vertices);
     std::vector<double> parent(num_vertices);
     boost::disjoint_sets<double*, double*> dsets(&rank[0],&parent[0]);
@@ -119,18 +107,15 @@ void watershed(double * conn, double * nhood,double * comp, double* growMask, do
     }
 
 	// output array
-    														//mxArray * label;
+
     int label_num_dims=marker_num_dims;
     int label_dims[label_num_dims];
     for (int i=0; i<label_num_dims; i++){
         label_dims[i]=marker_dims[i];
     }
 
-															//plhs[0] = mxCreateNumericArray(label_num_dims,label_dims,mxUINT32_CLASS,mxREAL);
-															//label=outputComp;//plhs[0];
-															//uint32_t * label_data = (uint32_t *) mxGetData(label);
 	double * label_data = outputComp;
-    int label_num_elements= dimZ*dimY*dimX;					//mxGetNumberOfElements(label);
+    int label_num_elements= dimZ*dimY*dimX;
 
 	// initialize output array and find representatives of each class
 	std::map<double,int> components;
@@ -153,7 +138,6 @@ void watershed(double * conn, double * nhood,double * comp, double* growMask, do
 
     for (int iEdge=0; iEdge<conn_num_elements; iEdge++){
 		if (conn_data[iEdge] > low_threshold){
-			//cout << "edge: " << iEdge << endl;
 			// check to see if either vertex attached to this edge is grow-able
 			double edge_array[conn_num_dims];
 
@@ -165,20 +149,19 @@ void watershed(double * conn, double * nhood,double * comp, double* growMask, do
 				v2_array[i]=edge_array[i];
 			}
 
-			for (int i=0; i<nhood_dims[1]; i++){
+			for (int i=0; i<nhood_dims[1]; i++)
 				v2_array[i]+= (int) nhood_data[(int)(nhood_dims[0]*i+edge_array[conn_num_dims-1])];
-			}
+
             v1=sub2inddub(v1_array, conn_num_dims-1, conn_dims);
             v2=sub2inddub(v2_array, conn_num_dims-1, conn_dims);
-			if (grow_mask_data[v1] || grow_mask_data[v2]){
+			if (grow_mask_data[v1] || grow_mask_data[v2])
 		        pqueue.push(iEdge);
-			}
+
 
 		}
     }
 
     while (!pqueue.empty()){
-    	//cout << "entering pqueue\t";
         int cur_edge=pqueue.top();
         pqueue.pop();
         double edge_array[conn_num_dims];
@@ -190,14 +173,9 @@ void watershed(double * conn, double * nhood,double * comp, double* growMask, do
             v1_array[i]=edge_array[i];
             v2_array[i]=edge_array[i];
         }
-        //cout << "(";
         for (int i=0; i<nhood_dims[1]; i++){
             v2_array[i]+= (int) nhood_data[(int)(nhood_dims[0]*i+edge_array[conn_num_dims-1])];
-            //cout << v2_array[i] << " ";
-//          cout << endl;
-
         }
-        //cout << ") ";
 
 
         bool OOB=false;
@@ -209,7 +187,6 @@ void watershed(double * conn, double * nhood,double * comp, double* growMask, do
 
 
         if (!OOB){
-        	//cout << "updating label!" << endl;
             v1=sub2inddub(v1_array, conn_num_dims-1, conn_dims);
             v2=sub2inddub(v2_array, conn_num_dims-1, conn_dims);
 
@@ -234,9 +211,9 @@ void watershed(double * conn, double * nhood,double * comp, double* growMask, do
     }
 
 	// write out the final coloring
-	for (int i=0; i<label_num_elements; i++){
+	for (int i=0; i<label_num_elements; i++)
 		label_data[i] = label_data[dsets.find_set(i)];
-	}
+
 
 
 }

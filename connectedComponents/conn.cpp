@@ -30,65 +30,18 @@ void ind2sub(int ind,const int num_dims,const int * dims,int * sub){
 	return;
 }
 
-
-void printlist(list<int> &l){
-    for(list<int>::const_iterator i = l.begin(); i != l.end(); i++)
-        cout << *i << ' ';
-    cout << endl;
-}
-
 list<int> connectedComponentsCPP(double * conn, double * nhood, int dimX, int dimY, int dimZ, double * outputComp, list<int> * cmpSz){
-/*
-    //test inputs
-    int ccnbrs[4]={0,0,0,0};
-    const int ccdims[4] ={73,73,73,3};
-    int count=0;
-    cout << "printing conn..." << endl;
-    for(int i=0;i<10;i++){
-        ccnbrs[2]=i;
-        for(int j=0;j<3;j++){
-            ccnbrs[3]=j;
-            int ind = sub2ind(ccnbrs,4,ccdims);
-            cout << count++ << " " << conn[count] << " " << endl;
-        }
-    }
-    cout << endl;
-    cout << "printing nhood..." << endl;
-    int cnbrs[2];
-    const int cdims[2]={3,3};
-    //sub2ind(nbor,conn_num_dims,conn_dims);
-    for(int i=0;i<3;i++){
-        //        cout << nhood[i] << " ";
-        for(int j=0;j<3;j++){
-            cnbrs[0]=i;
-            cnbrs[1]=j;
-            int ind = sub2ind(cnbrs,2,cdims);
-            //cout << "ind,val: "<< ind << " " << nhood[ind] << endl;
-        }
-    }
-    cout << endl;
-    cout << "printing dims..." << endl;
-    cout << dimX << " " << dimY << " " << dimZ << endl;
 
-    cout << "printing conn2..." << endl;
-    for (int i=15980;i<16000;i++){
-        cout << i << " " << conn[i] << endl;
-    }
-*/
-
-    //reading inputs
+    //reading inputs //todo: check for different number of affinities
     const int conn_num_dims = 4;
     int dims[4] = {dimX,dimY,dimZ,3};
     const int * conn_dims = &dims[0];
     const int conn_num_elements = dimX*dimY*dimZ*3;
-    //const mxLogical * conn_data = mxGetLogicals(conn);
     const double* conn_data = conn;
-    //const mxArray * nhood1 = prhs[1];
     const int nhood1_num_dims = 2;
     int nhoodDims[2] = {3,3};
     const int * nhood1_dims = &nhoodDims[0];
     const double * nhood1_data = nhood;
-    //todo: get sizes, check sizes
 
     // output mapping
     double* label = outputComp;
@@ -111,18 +64,13 @@ list<int> connectedComponentsCPP(double * conn, double * nhood, int dimX, int di
     std::stack<int> S;
     std::vector<int> component_sizes;
     for (int ind=0; ind<label_num_elements; ind++){
-        //cout << "starting ";
         if (discovered[ind]==false){
-            //cout << "checking ";
             S.push(ind);
             component_sizes.push_back(1);
-            //cout << "comp szs " << component_sizes.size() << endl;
             label_data[ind]=component_sizes.size();
             discovered[ind]=true;
             int current;
             while (!S.empty()){
-                //cout << "\tind: " << ind << " ";
-                //cout << "S ";
                 current=S.top();
                 int cur_pos[label_num_dims];
                 ind2sub(current, label_num_dims, label_dims, cur_pos);
@@ -131,11 +79,9 @@ list<int> connectedComponentsCPP(double * conn, double * nhood, int dimX, int di
                 int nbor_ind;
                 int new_pos[label_num_dims];
                 int new_ind;
-                //cout << "0 ";
                 for (int i=0; i<label_num_dims; i++){
                     nbor[i]=cur_pos[i];
                 }
-                //cout << "1 " ;
                 for (int i=0; i<nhood1_dims[0]; i++){
                     nbor[conn_num_dims-1]=i;
                     nbor_ind=sub2ind(nbor,conn_num_dims,conn_dims);
@@ -159,9 +105,7 @@ list<int> connectedComponentsCPP(double * conn, double * nhood, int dimX, int di
                         }
                     }
                 }
-                //cout << "2 ";
                 for (int i=0; i<nhood1_dims[0]; i++){
-                    //cout << "2_1 ";
                     bool OOB=false;
                     for (int j=0; j<label_num_dims; j++){
                         int check=cur_pos[j]- (int) nhood1_data[i+j*nhood1_dims[0]];
@@ -171,7 +115,6 @@ list<int> connectedComponentsCPP(double * conn, double * nhood, int dimX, int di
                         new_pos[j]=check;
                     }
                     if (!OOB){
-                        //cout << "2_2 ";
                         for (int j=0; j<label_num_dims; j++){
                             nbor[j]=new_pos[j];
                         }
@@ -188,7 +131,6 @@ list<int> connectedComponentsCPP(double * conn, double * nhood, int dimX, int di
                         }
                     }
                 }
-                //cout << "ending..." << S.empty() <<endl;
             }
         }
     }
