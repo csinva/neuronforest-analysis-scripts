@@ -3,12 +3,6 @@ import numpy as np
 cimport numpy as np
 
 cdef extern from "conn.h":
-    void printlist(list[int] &)
-
-def list_test(list[int] l):
-    printlist(l)
-
-cdef extern from "conn.h":
     list[int] connectedComponentsCPP(double * conn, double * nhood,int dimX,int dimY,int dimZ, double * outputComp, list[int] * l)
 
 def connectedComponents(np.ndarray[np.double_t,ndim=4] conn, np.ndarray[np.double_t,ndim=2] nhood): #todo: no need for fortran array
