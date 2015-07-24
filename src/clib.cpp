@@ -49,7 +49,7 @@ extern "C"
      */
      void malisLoss(const int* dims, const float* conn, const double* nhood, const int* seg, const double marginArg,
      const bool posArg, float* losses, double* lossReturn, double* classErrReturn, double* randIndexReturn){
-        cout << "malis is calculating" << endl;
+        cout << "malis setup..." << endl;
      	/* input arrays */
 //     	cout << "dims: "<<dims[0]<<" "<<dims[1]<<" "<<dims[2]<<" "<<dims[3]<<endl;
 //     	cout << "marginArg: "<<marginArg<< " posArg: "<<posArg<<endl;
@@ -133,7 +133,8 @@ extern "C"
                             pqueue[ j++ ] = i;
                     }
         sort( pqueue.begin(), pqueue.end(), AffinityGraphCompare<float>( conn_data ) );
-    
+
+        cout << "malis MST..." << endl;
         /* Start MST */
         int minEdge;
         int e, v1, v2;
@@ -145,6 +146,7 @@ extern "C"
     
         /* Start Kruskal's */
         for ( int i = 0; i < pqueue.size(); ++i ) {
+//            cout << i << endl;
             minEdge = pqueue[i];
             e = minEdge/nVert; v1 = minEdge%nVert; v2 = v1+nHood[e];
     
@@ -207,7 +209,8 @@ extern "C"
             } // end link
     
         } // end while
-    
+
+        cout << "malis return..." << endl;
         /* Return items */
         loss /= nPairNorm;
         *lossReturn = loss;
