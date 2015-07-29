@@ -21,5 +21,5 @@ java -jar jnaFull.jar clib.h -v -noJar -noComp -package main.scala  -f -convertB
 
 **Compliling clib**
 In the src directory:
-g++ -Wall -shared -fPIC -o libctest.so ctest.cpp
+g++ -Wall -shared -fPIC -o libctest.so clib.cpp
 (libctest.so must be under src)

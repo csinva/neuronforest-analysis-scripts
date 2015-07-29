@@ -56,17 +56,12 @@ extern "C"
          // 4d connectivity graph [y * x * z * #edges]
      	const int	conn_num_dims		= 4;
      	const int*	conn_dims			= dims;
-     	const int	conn_num_elements	= dims[0]*dims[1]*dims[2]*dims[3];
      	const float*	conn_data		= conn;
          // graph neighborhood descriptor [3 * #edges]
-     	const int	nhood_num_dims		= dims[3]*dims[3];
      	const int nhoodDims[2]          = {dims[3],dims[3]};
      	const int*	nhood_dims			= &nhoodDims[0];
      	const double*	nhood_data		= nhood;
          // true target segmentation [y * x * z]
-     	const int	seg_num_dims		= 3;
-     	const int*	seg_dims			= dims;
-     	const int	seg_num_elements	= dims[0]*dims[1]*dims[2];
      	const int*	seg_data			= seg;
          // sq-sq loss margin [0.3]
          const double    margin         = marginArg;
@@ -135,10 +130,11 @@ extern "C"
         sort( pqueue.begin(), pqueue.end(), AffinityGraphCompare<float>( conn_data ) );
 
         cout << "malis MST..." << endl;
+        cout << "pqueue.size: " << pqueue.size() << endl;
         /* Start MST */
         int minEdge;
         int e, v1, v2;
-        int set1, set2, tmp;
+        int set1, set2;
         int nPair = 0;
         double loss=0, dl=0;
         int nPairIncorrect = 0;
@@ -146,7 +142,7 @@ extern "C"
     
         /* Start Kruskal's */
         for ( int i = 0; i < pqueue.size(); ++i ) {
-//            cout << i << endl;
+            //cout << i << endl;
             minEdge = pqueue[i];
             e = minEdge/nVert; v1 = minEdge%nVert; v2 = v1+nHood[e];
     

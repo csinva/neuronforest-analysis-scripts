@@ -41,4 +41,5 @@ stats = randIndex(compT,watershed)
 tf = time.clock()
 
 print stats
+print "ri should be about .422"
 print "time:",tf-t0,"seconds"
