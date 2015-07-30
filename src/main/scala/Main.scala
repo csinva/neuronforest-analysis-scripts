@@ -17,8 +17,6 @@ object Main {
     // Can only call methods statically
     trait CLibScala extends Library {
       def helloFromC
-      def arrTest(size: Int): Int
-      def arrDouble(@Ptr arr: Long,@Ptr arr2: Long, size: Int): Int
       def malisLoss(@Ptr dims: Long, @Ptr conn: Long, @Ptr nhood: Long, @Ptr seg: Long, margin: Double, pos: Boolean,
                     @Ptr losses: Long, @Ptr loss: Long, @Ptr randIndex: Long)
     }
@@ -31,7 +29,7 @@ object Main {
       val NUM3 = NUM*3
 
       //load things
-      var predArr:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/malis/001/predsArr.raw") //saved as x,y,z
+      val predArr:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/malis/001/predsArr.raw") //saved as x,y,z
       val labelArr:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/malis/001/pointsArr.raw")  //saved as x,y,z
       val seg:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/malis/001/segArr.raw") //this errors if it is lower
       val affPos:Array[Float] = min(predArr,labelArr)
@@ -42,7 +40,8 @@ object Main {
       val pos:Boolean = true
       val neg:Boolean = false
       val dims = allocateInts(4)
-      val conn = allocateFloats(NUM3) //should be [y,x,z,#edges]
+      val connPos = allocateFloats(NUM3) //should be [y,x,z,#edges]
+      val connNeg = allocateFloats(NUM3) //should be [y,x,z,#edges]
       val segC = allocateInts(NUM) //should be [y,x,z]
 
       for(i<-0 until 4)
@@ -55,8 +54,10 @@ object Main {
       //order everything in Fortran Order
       for(x<-0 until ss;y<-0 until ss;z<-0 until ss){
         segC(z*ss*ss + y * ss + x ) = seg(x * ss * ss + y * ss + z).toInt
-        for (i <- 0 until 3)
-          conn(i * ss * ss * ss + z * ss * ss + y * ss + x) = affPos(x * ss * ss * 3 + y * ss * 3 + z * 3 + i)
+        for (i <- 0 until 3) {
+          connPos(i * ss * ss * ss + z * ss * ss + y * ss + x) = affPos(x * ss * ss * 3 + y * ss * 3 + z * 3 + i)
+          connNeg(i * ss * ss * ss + z * ss * ss + y * ss + x) = affNeg(x * ss * ss * 3 + y * ss * 3 + z * 3 + i)
+        }
       }
 
       //outputs
@@ -68,10 +69,10 @@ object Main {
 
       val clib: CLibScala = Native.loadLibrary("ctest", classOf[CLibScala]).asInstanceOf[CLibScala]
       clib.helloFromC
-      clib.malisLoss(Pointer.getPeer(dims),Pointer.getPeer(conn),Pointer.getPeer(nhood),Pointer.getPeer(segC),
+      clib.malisLoss(Pointer.getPeer(dims),Pointer.getPeer(connPos),Pointer.getPeer(nhood),Pointer.getPeer(segC),
         margin,pos,Pointer.getPeer(gradsPos),Pointer.getPeer(lossPos),Pointer.getPeer(randIndex))
       println("randIndex pos:"+randIndex(0))
-      clib.malisLoss(Pointer.getPeer(dims),Pointer.getPeer(conn),Pointer.getPeer(nhood),Pointer.getPeer(segC),
+      clib.malisLoss(Pointer.getPeer(dims),Pointer.getPeer(connNeg),Pointer.getPeer(nhood),Pointer.getPeer(segC),
         margin,neg,Pointer.getPeer(gradsNeg),Pointer.getPeer(lossNeg),Pointer.getPeer(randIndex))
       println("randIndex neg:"+randIndex(0))
 
@@ -89,9 +90,9 @@ object Main {
       val loss = (lossPos(0)+lossNeg(0))/(.5*NUM3*(NUM3-1)) //divide by the total number of pairs
       println("total loss: "+loss)
 
-      save3D("malis/001","lossesPos.raw",gradsArrPos,(ss,ss,ss*3))
-      save3D("malis/001","lossesNeg.raw",gradsArrNeg,(ss,ss,ss*3))
-      save3D("malis/001","losses.raw",grads,(ss,ss,ss*3))
+      save3D("malis/001","lossesPos.raw",gradsArrPos,(ss,ss,ss))
+      save3D("malis/001","lossesNeg.raw",gradsArrNeg,(ss,ss,ss))
+      save3D("malis/001","losses.raw",grads,(ss,ss,ss))
 
     } catch {
       case e:Throwable =>

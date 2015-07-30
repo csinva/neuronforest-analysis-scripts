@@ -141,8 +141,8 @@ function calcGrads()
 %     BrowseComponents('ii',lossesPos,lossesNeg);
 %       BrowseComponents('iici',labels,preds,segs,lossesPos+lossesNeg);
 % BrowseComponents('ciii',segs,labels,preds>.5,losses(:,:,:,3));
-%BrowseComponents('ii',lossesArrPos(:,:,:,1),lossesArrNeg(:,:,:,1));
-BrowseComponents('iii',labels,preds,losses(:,:,:,1));
+BrowseComponents('ii',lossesArrPos(:,:,:,2),lossesArrNeg(:,:,:,2));
+%BrowseComponents('iii',labels,preds,losses(:,:,:,1));
 end
 
 function out = load3D( file, dims )
