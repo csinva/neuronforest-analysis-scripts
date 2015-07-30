@@ -107,7 +107,7 @@ object Main {
       val pos:Boolean = true
 
       //outputs
-      val losses = allocateFloats(NUM)
+      val losses = allocateFloats(NUM*3)
       val loss = allocateDouble()
       val classErr = allocateDouble()
       val randIndex = allocateDouble()
@@ -120,13 +120,14 @@ object Main {
       ctest.malisLoss(Pointer.getPeer(dims),Pointer.getPeer(conn),Pointer.getPeer(nhood),Pointer.getPeer(segC),
         margin,pos,Pointer.getPeer(losses),Pointer.getPeer(loss),Pointer.getPeer(classErr),Pointer.getPeer(randIndex))
 
-      val lossArr:Array[Double]=Array.fill[Double](NUM)(0)
+      val lossArr:Array[Double]=Array.fill[Double](NUM*3)(0)
       //for(i<-0 to NUM) lossArr(NUM-i) = losses(i).toDouble
       for(x<-0 until ss)
         for(y<-0 until ss)
-          for(z<-0 until ss) {
-            lossArr(z*ss*ss + y * ss + x ) = losses(x * ss * ss + y * ss + z).toDouble
-          }
+          for(z<-0 until ss)
+            for(i<-0 until 3)
+              lossArr(x * ss * ss * 3 + y * ss * 3 + z * 3 + i) = losses(i * ss * ss * ss + z * ss * ss + y * ss + x).toDouble
+
       println("randIndex:"+randIndex(0))
       save3D("malis/001","losses.raw",lossArr,(ss,ss,ss))
      //val ctest: ClibLibrary = Clib//Native.loadLibrary("ctest", classOf[ClibLibrary]).asInstanceOf[ClibLibrary]
