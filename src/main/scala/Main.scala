@@ -35,103 +35,63 @@ object Main {
       val seg:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/malis/001/segArr.raw") //this errors if it is lower
       val affPos:Array[Float] = min(predArr,labelArr)
       val affNeg:Array[Float] = max(predArr,labelArr)
-      /*
-      println("expected dims:"+ss*ss*ss*3)
-      println("len:"+predArr.size)
-      println("sum:"+predArr.sum)
-      println("len:"+labelArr.size)
-      println("sum:"+labelArr.sum)
-      */
 
       //inputs - todo: make these assignments all done with map
+      val margin:Double = .3
+      val pos:Boolean = true
+      val neg:Boolean = false
       val dims = allocateInts(4)
-      for(i<-0 until 4){
-        dims(i)=dimsList(i)
-      }
-
-      //order everything in Fortran Order
-
       val conn = allocateFloats(NUM*3) //should be [y,x,z,#edges]
       val connArr = Array.ofDim[Float](ss,ss,ss,3)
-      //for(i<-0 until NUM*3) conn(i) = affPos(i)
-
-      for(x<-0 until ss)
-        for(y<-0 until ss)
-          for(z<-0 until ss)
-            for (i <- 0 until 3) {
-              connArr(x)(y)(z)(i) = affPos(x * ss * ss * 3 + y * ss * 3 + z * 3 + i)
-              conn(i * ss * ss * ss + z * ss * ss + y * ss + x) = affPos(x * ss * ss * 3 + y * ss * 3 + z * 3 + i)
-            }
-
-      for(x<-0 until 3)
-        for(y<-0 until 3)
-          for(z<-0 until 3) {
-            for (i <- 0 until 3) {
-//              print((x+1) + "," + (y+1) + "," + (z+1) + "," + (i+1) + ": ")
-//              println(connArr(x)(y)(z)(i))
-            }
-          }
-//      println(sum(affPos))
-//      println(sum(affNeg))
-
-      val segArr = Array.ofDim[Int](ss,ss,ss)
       val segC = allocateInts(NUM) //should be [y,x,z]
 
+      for(i<-0 until 4)
+        dims(i)=dimsList(i)
 
-      for(x<-0 until ss)
-        for(y<-0 until ss)
-          for(z<-0 until ss) {
-            segArr(x)(y)(z) = seg(x * ss * ss + y * ss + z).toInt
-            segC(z*ss*ss + y * ss + x ) = seg(x * ss * ss + y * ss + z).toInt
-          }
-/*
-      for(x<-7 until 10)
-        for(y<-7 until 10)
-          for(z<-7 until 10) {
-            println((x+1)+","+(y+1)+","+(z+1)+": "+segArr(x)(y)(z))
-          }
-*/
-
-      for(i<-0 until 20) {
-//        println(i + ": " + conn(i))
-//        println(i + ": " + segC(i))
-
-      }
       val nhood = allocateDoubles(dims(3)*dims(3))
-
       for(i<-0 until 3)
         for(j<-0 until 3)
           nhood(i*3+j)= -identity(i,j)
 
-      val margin:Double = .3
-      val pos:Boolean = true
+      //order everything in Fortran Order
+      for(x<-0 until ss)
+        for(y<-0 until ss)
+          for(z<-0 until ss)
+            for (i <- 0 until 3)
+              conn(i * ss * ss * ss + z * ss * ss + y * ss + x) = affPos(x * ss * ss * 3 + y * ss * 3 + z * 3 + i)
+      for(x<-0 until ss)
+        for(y<-0 until ss)
+          for(z<-0 until ss)
+            segC(z*ss*ss + y * ss + x ) = seg(x * ss * ss + y * ss + z).toInt
 
       //outputs
-      val losses = allocateFloats(NUM*3)
+      val lossesPos = allocateFloats(NUM*3)
+      val lossesNeg = allocateFloats(NUM*3)
       val loss = allocateDouble()
       val classErr = allocateDouble()
       val randIndex = allocateDouble()
 
 
-
-      println("\n\n\n")
       val ctest: CLibScala = Native.loadLibrary("ctest", classOf[CLibScala]).asInstanceOf[CLibScala]
       ctest.helloFromC
       ctest.malisLoss(Pointer.getPeer(dims),Pointer.getPeer(conn),Pointer.getPeer(nhood),Pointer.getPeer(segC),
-        margin,pos,Pointer.getPeer(losses),Pointer.getPeer(loss),Pointer.getPeer(classErr),Pointer.getPeer(randIndex))
+        margin,pos,Pointer.getPeer(lossesPos),Pointer.getPeer(loss),Pointer.getPeer(classErr),Pointer.getPeer(randIndex))
+      ctest.malisLoss(Pointer.getPeer(dims),Pointer.getPeer(conn),Pointer.getPeer(nhood),Pointer.getPeer(segC),
+        margin,neg,Pointer.getPeer(lossesNeg),Pointer.getPeer(loss),Pointer.getPeer(classErr),Pointer.getPeer(randIndex))
 
-      val lossArr:Array[Double]=Array.fill[Double](NUM*3)(0)
-      //for(i<-0 to NUM) lossArr(NUM-i) = losses(i).toDouble
+      val lossArrPos:Array[Double]=Array.fill[Double](NUM*3)(0)
+      val lossArrNeg:Array[Double]=Array.fill[Double](NUM*3)(0)
       for(x<-0 until ss)
         for(y<-0 until ss)
           for(z<-0 until ss)
-            for(i<-0 until 3)
-              lossArr(x * ss * ss * 3 + y * ss * 3 + z * 3 + i) = losses(i * ss * ss * ss + z * ss * ss + y * ss + x).toDouble
+            for(i<-0 until 3) {
+              lossArrPos(x * ss * ss * 3 + y * ss * 3 + z * 3 + i) = lossesPos(i * ss * ss * ss + z * ss * ss + y * ss + x).toDouble
+              lossArrNeg(x * ss * ss * 3 + y * ss * 3 + z * 3 + i) = lossesNeg(i * ss * ss * ss + z * ss * ss + y * ss + x).toDouble
+            }
 
       println("randIndex:"+randIndex(0))
-      save3D("malis/001","losses.raw",lossArr,(ss,ss,ss))
-     //val ctest: ClibLibrary = Clib//Native.loadLibrary("ctest", classOf[ClibLibrary]).asInstanceOf[ClibLibrary]
-
+      save3D("malis/001","lossesPos.raw",lossArrPos,(ss,ss,ss))
+      save3D("malis/001","lossesNeg.raw",lossArrNeg,(ss,ss,ss))
 
     } catch {
       case e:Throwable =>
