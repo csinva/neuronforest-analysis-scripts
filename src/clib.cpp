@@ -12,7 +12,7 @@ using namespace std;
 template <class T>
 class AffinityGraphCompare{
 	private:
-	const T * mEdgeWeightArray;
+	    const T * mEdgeWeightArray;
 	public:
 		AffinityGraphCompare(const T * EdgeWeightArray){
 			mEdgeWeightArray = EdgeWeightArray;
@@ -51,7 +51,7 @@ extern "C"
      const bool posArg, float* losses, double* lossReturn, double* classErrReturn, double* randIndexReturn){
         cout << "malis setup..." << endl;
      	/* input arrays */
-//     	cout << "dims: "<<dims[0]<<" "<<dims[1]<<" "<<dims[2]<<" "<<dims[3]<<endl;
+     	cout << "dims: "<<dims[0]<<" "<<dims[1]<<" "<<dims[2]<<" "<<dims[3]<<endl;
 //     	cout << "marginArg: "<<marginArg<< " posArg: "<<posArg<<endl;
          // 4d connectivity graph [y * x * z * #edges]
      	const int	conn_num_dims		= 4;
@@ -67,6 +67,7 @@ extern "C"
          const double    margin         = marginArg;
          // is this a positive example pass [true] or a negative example pass [false] ?
          const bool      pos            = posArg;
+         const double thresh = .99;
 
          /* Output arrays */
          // the derivative of the MALIS-SqSq loss function
@@ -97,7 +98,7 @@ extern "C"
         vector<int> parent(nVert);
         map<int,int> segSizes;
         int nLabeledVert=0;
-        int nPairPos=0;
+        unsigned int nPairPos=0;
         boost::disjoint_sets<int*, int*> dsets(&rank[0],&parent[0]);
         for (int i=0; i<nVert; ++i){
             dsets.make_set(i);
@@ -105,14 +106,17 @@ extern "C"
                 overlap[i].insert(pair<int,int>(seg_data[i],1));
                 ++nLabeledVert;
                 ++segSizes[seg_data[i]];
-                nPairPos += (segSizes[seg_data[i]]-1);
+                nPairPos +=(unsigned int) (segSizes[seg_data[i]]-1);
             }
         }
-        int nPairTot = (nLabeledVert*(nLabeledVert-1))/2;
-        int nPairNeg = nPairTot - nPairPos;
-        int nPairNorm;
+        unsigned int nPairTot = (nLabeledVert*(nLabeledVert-1))/2;
+        unsigned int nPairNeg = nPairTot - nPairPos;
+        unsigned int nPairNorm;
         if (pos) {nPairNorm = nPairPos;} else {nPairNorm = nPairNeg;}
-    
+        cout << endl;
+        cout << "pos: " << pos << endl;
+        cout << "nPairPos: " << nPairPos << " " << endl;
+        cout << "nPairNorm: " << nPairNorm<<endl;
         /* Sort all the edges in increasing order of weight */
         std::vector< int > pqueue( static_cast< int >(3) *
                                        ( conn_dims[0]-1 ) *
@@ -137,7 +141,7 @@ extern "C"
         int set1, set2;
         int nPair = 0;
         double loss=0, dl=0;
-        int nPairIncorrect = 0;
+        unsigned int nPairIncorrect = 0;
         map<int,int>::iterator it1, it2;
     
         /* Start Kruskal's */
@@ -165,8 +169,8 @@ extern "C"
                             dl = max(0.0,0.5+margin-conn_data[minEdge]);
                             loss += 0.5*dl*dl*nPair;
                             dloss_data[minEdge] += dl*nPair;
-                            if (conn_data[minEdge] <= 0.5) { // an error
-                                nPairIncorrect += nPair;
+                            if (conn_data[minEdge] <= thresh) { // an error
+                                nPairIncorrect += (unsigned int) (nPair);
                             }
     
                         } else if ((!pos) && (it1->first != it2->first)) {
@@ -175,8 +179,8 @@ extern "C"
                             dl = -max(0.0,conn_data[minEdge]-0.5+margin);
                             loss += 0.5*dl*dl*nPair;
                             dloss_data[minEdge] += dl*nPair;
-                            if (conn_data[minEdge] > 0.5) { // an error
-                                nPairIncorrect += nPair;
+                            if (conn_data[minEdge] > thresh) { // an error
+                                nPairIncorrect += (unsigned int) (nPair);
                             }
                         }
                     }
@@ -207,6 +211,8 @@ extern "C"
         } // end while
 
         cout << "malis return..." << endl;
+        cout << "nPairIncorrect:\t\t" << nPairIncorrect << endl;
+        cout << "nPairNorm:\t\t\t" << nPairNorm << endl;
         /* Return items */
         loss /= nPairNorm;
         *lossReturn = loss;

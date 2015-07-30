@@ -104,8 +104,25 @@ function calcGrads()
     preds = load3D([p 'predsArr.raw'],dims);
     segs = load3D_1([p 'segArr.raw'],dims);
     losses = load3D_1([p 'losses.raw'],dims);
+    
+
     affPos = min(preds,labels);
     affNeg = max(preds,labels);
+    
+%{
+     for x=1:3
+        for y=1:3
+            for z=1:3
+                for i=1:3
+                    fprintf('%d,%d,%d,%d: %d\n',x,y,z,i,affPos(x,y,z))
+                end
+            end
+        end
+     end
+    %}
+% %     sum(affPos(:))
+    sum(affNeg(:))
+           
     [lossesPos,loss_p,classerr_p,randIndex_p] = malis_loss_mex(single(affPos), ...
     double(-eye(3)),uint16(segs),double(.3),boolean(true));
     
@@ -120,7 +137,8 @@ function calcGrads()
 %                                                 m.layers{m.layer_map.error}.param, ...
 %                                                 false);
 %     BrowseComponents('ii',lossesPos,lossesNeg);
-      BrowseComponents('iici',labels,preds,segs,lossesPos+lossesNeg);
+%       BrowseComponents('iici',labels,preds,segs,lossesPos+lossesNeg);
+BrowseComponents('ciii',segs,labels,preds>.5,losses);
 end
 
 function out = load3D( file, dims )

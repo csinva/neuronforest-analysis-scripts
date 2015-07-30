@@ -2,7 +2,7 @@ import java.io
 import java.io.{FileWriter, RandomAccessFile}
 import java.nio.{FloatBuffer, ByteBuffer}
 import java.util.{Date, Calendar}
-import breeze.linalg.{max, min}
+import breeze.linalg.{sum, reshape, max, min}
 import com.sun.jna.{Library, Native}
 import main.scala.CLib.CTestJava
 import main.scala.{DoubleTuple, CLib, ClibLibrary}
@@ -34,11 +34,14 @@ object Main {
       val labelArr:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/malis/001/pointsArr.raw")  //saved as x,y,z
       val seg:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/malis/001/segArr.raw") //this errors if it is lower
       val affPos:Array[Float] = min(predArr,labelArr)
+      val affNeg:Array[Float] = max(predArr,labelArr)
+      /*
       println("expected dims:"+ss*ss*ss*3)
       println("len:"+predArr.size)
       println("sum:"+predArr.sum)
       println("len:"+labelArr.size)
       println("sum:"+labelArr.sum)
+      */
 
       //inputs - todo: make these assignments all done with map
       val dims = allocateInts(4)
@@ -47,24 +50,53 @@ object Main {
       }
 
       //order everything in Fortran Order
+
       val conn = allocateFloats(NUM*3) //should be [y,x,z,#edges]
-//      for(i<-0 until NUM*3) conn(i) = affPos(i)
+      val connArr = Array.ofDim[Float](ss,ss,ss,3)
+      //for(i<-0 until NUM*3) conn(i) = affPos(i)
+
       for(x<-0 until ss)
         for(y<-0 until ss)
           for(z<-0 until ss)
-            for(i<-0 until 3)
-              conn(y+x*ss+z*ss*ss+i*3*ss*ss)=affPos(x*ss*ss*3+y*ss*3+z*3+i)
+            for (i <- 0 until 3) {
+              connArr(x)(y)(z)(i) = affPos(x * ss * ss * 3 + y * ss * 3 + z * 3 + i)
+              conn(i * ss * ss * ss + z * ss * ss + y * ss + x) = affPos(x * ss * ss * 3 + y * ss * 3 + z * 3 + i)
+            }
 
+      for(x<-0 until 3)
+        for(y<-0 until 3)
+          for(z<-0 until 3) {
+            for (i <- 0 until 3) {
+//              print((x+1) + "," + (y+1) + "," + (z+1) + "," + (i+1) + ": ")
+//              println(connArr(x)(y)(z)(i))
+            }
+          }
+//      println(sum(affPos))
+//      println(sum(affNeg))
+
+      val segArr = Array.ofDim[Int](ss,ss,ss)
       val segC = allocateInts(NUM) //should be [y,x,z]
-      for(i<-0 until NUM) segC(i) = seg(i).toInt
+
+
       for(x<-0 until ss)
         for(y<-0 until ss)
-          for(z<-0 until ss)
-            segC(y+x*ss+z*ss*ss) = seg(x*ss*ss+y*ss+z).toInt
+          for(z<-0 until ss) {
+            segArr(x)(y)(z) = seg(x * ss * ss + y * ss + z).toInt
+            segC(z*ss*ss + y * ss + x ) = seg(x * ss * ss + y * ss + z).toInt
+          }
+/*
+      for(x<-7 until 10)
+        for(y<-7 until 10)
+          for(z<-7 until 10) {
+            println((x+1)+","+(y+1)+","+(z+1)+": "+segArr(x)(y)(z))
+          }
+*/
 
-      for(i<-0 until 100) print(conn(i)+" ")
-      println()
+      for(i<-0 until 20) {
+//        println(i + ": " + conn(i))
+//        println(i + ": " + segC(i))
 
+      }
       val nhood = allocateDoubles(dims(3)*dims(3))
 
       for(i<-0 until 3)
@@ -79,14 +111,22 @@ object Main {
       val loss = allocateDouble()
       val classErr = allocateDouble()
       val randIndex = allocateDouble()
-      val lossArr:Array[Double]=Array.fill[Double](NUM)(0)
+
+
+
+      println("\n\n\n")
       val ctest: CLibScala = Native.loadLibrary("ctest", classOf[CLibScala]).asInstanceOf[CLibScala]
       ctest.helloFromC
       ctest.malisLoss(Pointer.getPeer(dims),Pointer.getPeer(conn),Pointer.getPeer(nhood),Pointer.getPeer(segC),
         margin,pos,Pointer.getPeer(losses),Pointer.getPeer(loss),Pointer.getPeer(classErr),Pointer.getPeer(randIndex))
 
-
-      for(i<-0 until NUM) lossArr(i) = losses(i).toDouble
+      val lossArr:Array[Double]=Array.fill[Double](NUM)(0)
+      //for(i<-0 to NUM) lossArr(NUM-i) = losses(i).toDouble
+      for(x<-0 until ss)
+        for(y<-0 until ss)
+          for(z<-0 until ss) {
+            lossArr(z*ss*ss + y * ss + x ) = losses(x * ss * ss + y * ss + z).toDouble
+          }
       println("randIndex:"+randIndex(0))
       save3D("malis/001","losses.raw",lossArr,(ss,ss,ss))
      //val ctest: ClibLibrary = Clib//Native.loadLibrary("ctest", classOf[ClibLibrary]).asInstanceOf[ClibLibrary]
