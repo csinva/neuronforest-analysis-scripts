@@ -47,11 +47,11 @@ extern "C"
      * Author: Srini Turaga (sturaga@mit.edu)
      * All rights reserved
      */
-     void malisLoss(const int* dims, const float* conn, const double* nhood, const int* seg, const double marginArg,
-     const bool posArg, float* losses, double* lossReturn, double* classErrReturn, double* randIndexReturn){
-        cout << "malis setup..." << endl;
+     void malisLoss(const int* dims, const float* conn, const double* nhood, const int* seg, const double margin,
+     const bool pos, float* losses, double* lossReturn, double* randIndexReturn){
+//        cout << "malis setup..." << endl;
      	/* input arrays */
-     	cout << "dims: "<<dims[0]<<" "<<dims[1]<<" "<<dims[2]<<" "<<dims[3]<<endl;
+//     	cout << "dims: "<<dims[0]<<" "<<dims[1]<<" "<<dims[2]<<" "<<dims[3]<<endl;
 //     	cout << "marginArg: "<<marginArg<< " posArg: "<<posArg<<endl;
          // 4d connectivity graph [y * x * z * #edges]
      	const int	conn_num_dims		= 4;
@@ -64,10 +64,9 @@ extern "C"
          // true target segmentation [y * x * z]
      	const int*	seg_data			= seg;
          // sq-sq loss margin [0.3]
-         const double    margin         = marginArg;
+//         const double    margin         = marginArg;
          // is this a positive example pass [true] or a negative example pass [false] ?
-         const bool      pos            = posArg;
-         const double thresh = .99;
+//         const bool      pos            = posArg;
 
          /* Output arrays */
          // the derivative of the MALIS-SqSq loss function
@@ -97,8 +96,8 @@ extern "C"
         vector<int> rank(nVert);
         vector<int> parent(nVert);
         map<int,int> segSizes;
-        int nLabeledVert=0;
-        unsigned int nPairPos=0;
+        unsigned long nLabeledVert=0;
+        unsigned long nPairPos=0;
         boost::disjoint_sets<int*, int*> dsets(&rank[0],&parent[0]);
         for (int i=0; i<nVert; ++i){
             dsets.make_set(i);
@@ -106,17 +105,17 @@ extern "C"
                 overlap[i].insert(pair<int,int>(seg_data[i],1));
                 ++nLabeledVert;
                 ++segSizes[seg_data[i]];
-                nPairPos +=(unsigned int) (segSizes[seg_data[i]]-1);
+                nPairPos +=(unsigned long) (segSizes[seg_data[i]]-1);
             }
         }
-        unsigned int nPairTot = (nLabeledVert*(nLabeledVert-1))/2;
-        unsigned int nPairNeg = nPairTot - nPairPos;
-        unsigned int nPairNorm;
+        unsigned long nPairTot = (nLabeledVert*(nLabeledVert-1))/2;
+        unsigned long nPairNeg = nPairTot - nPairPos;
+        unsigned long nPairNorm;
         if (pos) {nPairNorm = nPairPos;} else {nPairNorm = nPairNeg;}
-        cout << endl;
-        cout << "pos: " << pos << endl;
-        cout << "nPairPos: " << nPairPos << " " << endl;
-        cout << "nPairNorm: " << nPairNorm<<endl;
+//        cout << endl;
+//        cout << "pos: " << pos << endl;
+//        cout << "nPairPos: " << nPairPos << " " << endl;
+//        cout << "nPairNorm: " << nPairNorm<<endl;
         /* Sort all the edges in increasing order of weight */
         std::vector< int > pqueue( static_cast< int >(3) *
                                        ( conn_dims[0]-1 ) *
@@ -133,8 +132,8 @@ extern "C"
                     }
         sort( pqueue.begin(), pqueue.end(), AffinityGraphCompare<float>( conn_data ) );
 
-        cout << "malis MST..." << endl;
-        cout << "pqueue.size: " << pqueue.size() << endl;
+//        cout << "malis MST..." << endl;
+//        cout << "pqueue.size: " << pqueue.size() << endl;
         /* Start MST */
         int minEdge;
         int e, v1, v2;
@@ -145,7 +144,7 @@ extern "C"
         map<int,int>::iterator it1, it2;
     
         /* Start Kruskal's */
-        for ( int i = 0; i < pqueue.size(); ++i ) {
+        for (unsigned int i = 0; i < pqueue.size(); ++i ) {
             //cout << i << endl;
             minEdge = pqueue[i];
             e = minEdge/nVert; v1 = minEdge%nVert; v2 = v1+nHood[e];
@@ -166,26 +165,26 @@ extern "C"
                         if (pos && (it1->first == it2->first)) {
                             // +ve example pairs
                             // Sq-Sq loss is used here
-                            dl = max(0.0,0.5+margin-conn_data[minEdge]);
-                            loss += 0.5*dl*dl*nPair;
+                            dl = max(0.0,.5+margin-conn_data[minEdge]);
+                            loss += .5*dl*dl*nPair;
                             dloss_data[minEdge] += dl*nPair;
-                            if (conn_data[minEdge] <= thresh) { // an error
+                            if (conn_data[minEdge] <= .5) { // an error
                                 nPairIncorrect += (unsigned int) (nPair);
                             }
     
                         } else if ((!pos) && (it1->first != it2->first)) {
                             // -ve example pairs
                             // Sq-Sq loss is used here
-                            dl = -max(0.0,conn_data[minEdge]-0.5+margin);
-                            loss += 0.5*dl*dl*nPair;
+                            dl = -max(0.0,conn_data[minEdge]-.5+margin);
+                            loss += .5*dl*dl*nPair;
                             dloss_data[minEdge] += dl*nPair;
-                            if (conn_data[minEdge] > thresh) { // an error
+                            if (conn_data[minEdge] > .5) { // an error
                                 nPairIncorrect += (unsigned int) (nPair);
                             }
                         }
                     }
                 }
-                dloss_data[minEdge] /= nPairNorm;
+                dloss_data[minEdge] /= (float)(nPairNorm);
                 /* HARD-CODED ALERT!!
                  * The derivative of the activation function is also multiplied here.
                  * Assumes the logistic nonlinear activation function.
@@ -210,13 +209,12 @@ extern "C"
     
         } // end while
 
-        cout << "malis return..." << endl;
-        cout << "nPairIncorrect:\t\t" << nPairIncorrect << endl;
-        cout << "nPairNorm:\t\t\t" << nPairNorm << endl;
+//        cout << "malis return..." << endl;
+//        cout << "nPairIncorrect:\t\t" << nPairIncorrect << endl;
+//        cout << "nPairNorm:\t\t\t" << nPairNorm << endl;
         /* Return items */
-        loss /= nPairNorm;
+        //loss /= (double)nPairNorm; //this should be done outside the malis function
         *lossReturn = loss;
-        *classErrReturn = (double)nPairIncorrect / (double)nPairNorm;
         *randIndexReturn = 1.0 - ((double)nPairIncorrect / (double)nPairNorm);
      }
 }

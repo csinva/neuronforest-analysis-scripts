@@ -105,6 +105,7 @@ function calcGrads()
     segs = load3D_1([p 'segArr.raw'],dims);
     lossesArrPos = load3D([p 'lossesPos.raw'],dims);
     lossesArrNeg = load3D([p 'lossesNeg.raw'],dims);
+    losses= load3D([p 'losses.raw'],dims);
     
 
     affPos = min(preds,labels);
@@ -140,7 +141,8 @@ function calcGrads()
 %     BrowseComponents('ii',lossesPos,lossesNeg);
 %       BrowseComponents('iici',labels,preds,segs,lossesPos+lossesNeg);
 % BrowseComponents('ciii',segs,labels,preds>.5,losses(:,:,:,3));
-BrowseComponents('ii',lossesArrPos(:,:,:,2),lossesArrNeg(:,:,:,2));
+%BrowseComponents('ii',lossesArrPos(:,:,:,1),lossesArrNeg(:,:,:,1));
+BrowseComponents('iii',labels,preds,losses(:,:,:,1));
 end
 
 function out = load3D( file, dims )
