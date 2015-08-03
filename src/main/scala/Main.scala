@@ -6,6 +6,7 @@ import breeze.linalg.{sum, reshape, max, min}
 import com.sun.jna.{Library, Native}
 import main.scala.CLib.CTestJava
 import main.scala.{DoubleTuple, CLib, ClibLibrary}
+import main.scala.DoubleTuple
 import org.bridj.Pointer
 import org.bridj.Pointer._
 import org.bridj.ann.Ptr
@@ -20,7 +21,10 @@ object Main {
       def malisLoss(@Ptr dims: Long, @Ptr conn: Long, @Ptr nhood: Long, @Ptr seg: Long, margin: Double, pos: Boolean,
                     @Ptr losses: Long, @Ptr loss: Long, @Ptr randIndex: Long)
     }
+
     try {
+      val clib: CLibScala = Native.loadLibrary("/groups/turaga/home/singhc/analysis-scripts/src/clib.so",classOf[CLibScala]).asInstanceOf[CLibScala]
+      clib.helloFromC
       val ss = 78
       //this makes the assumption of nearest neighbors
       val dimsList:Array[Int] =Array(ss,ss,ss,3)
@@ -51,7 +55,7 @@ object Main {
       for(i<-0 until 3;j<-0 until 3)
         nhood(i*3+j)= -identity(i,j)
 
-      //order everything in Fortran Order
+      //order everything in Fortran Order -todo: do this is the c++
       for(x<-0 until ss;y<-0 until ss;z<-0 until ss){
         segC(z*ss*ss + y * ss + x ) = seg(x * ss * ss + y * ss + z).toInt
         for (i <- 0 until 3) {
@@ -67,8 +71,7 @@ object Main {
       val lossNeg = allocateDouble()
       val randIndex = allocateDouble()
 
-      val clib: CLibScala = Native.loadLibrary("ctest", classOf[CLibScala]).asInstanceOf[CLibScala]
-      clib.helloFromC
+
       clib.malisLoss(Pointer.getPeer(dims),Pointer.getPeer(connPos),Pointer.getPeer(nhood),Pointer.getPeer(segC),
         margin,pos,Pointer.getPeer(gradsPos),Pointer.getPeer(lossPos),Pointer.getPeer(randIndex))
       println("randIndex pos:"+randIndex(0))
@@ -79,20 +82,27 @@ object Main {
       //undo Fortran ordering
       val gradsArrPos:Array[Double]=Array.fill[Double](NUM3)(0)
       val gradsArrNeg:Array[Double]=Array.fill[Double](NUM3)(0)
-      val grads:Array[Double]=Array.fill[Double](NUM3)(0)
+      val gradsArr:Array[Double]=Array.fill[Double](NUM3)(0)
+
       var count=0
       for(x<-0 until ss;y<-0 until ss;z<-0 until ss;i<-0 until 3){
         gradsArrPos(count) = gradsPos(i * ss * ss * ss + z * ss * ss + y * ss + x).toDouble
         gradsArrNeg(count) = gradsNeg(i * ss * ss * ss + z * ss * ss + y * ss + x).toDouble
-        grads(count)=gradsArrPos(count)+gradsArrNeg(count)
+        gradsArr(count)=gradsArrPos(count)+gradsArrNeg(count)
         count+=1
       }
       val loss = (lossPos(0)+lossNeg(0))/(.5*NUM3*(NUM3-1)) //divide by the total number of pairs
+      val grads:Array[DoubleTuple] = Array.fill[DoubleTuple](NUM)(DoubleTuple.Zero)
+      for(i<-0 until NUM){
+        val offset = i*3
+        grads(i) = DoubleTuple(gradsArr(offset),gradsArr(offset+1),gradsArr(offset+2))
+      }
       println("total loss: "+loss)
 
       save3D("malis/001","lossesPos.raw",gradsArrPos,(ss,ss,ss))
       save3D("malis/001","lossesNeg.raw",gradsArrNeg,(ss,ss,ss))
-      save3D("malis/001","losses.raw",grads,(ss,ss,ss))
+      save3D("malis/001","losses.raw",gradsArr,(ss,ss,ss))
+      save3DTuple("malis/001","gradTuples.raw",grads,(ss,ss,ss))
 
     } catch {
       case e:Throwable =>
@@ -134,6 +144,26 @@ object Main {
     val floatBuffer =  byteBuffer.asFloatBuffer()
     that.foreach { d =>
       floatBuffer.put(d.toFloat)
+      fc.write(byteBuffer)
+      byteBuffer.rewind()
+      floatBuffer.clear()
+    }
+    fc.close()
+  }
+  def save3DTuple(path:String, filename:String, that:Array[DoubleTuple], dims:(Int, Int, Int)): Unit = {
+    println("Saving 3D: " + path + "/" + filename)
+    val dir =  new io.File(path)
+    if(!dir.exists) dir.mkdirs()
+
+    val fwdims = new FileWriter(path + "/dims.txt", false)
+    fwdims.write(dims._1 + " " + dims._2 + " " + dims._3)
+    fwdims.close()
+
+    val fc = new RandomAccessFile(path + "/" + filename, "rw").getChannel
+    val byteBuffer = ByteBuffer.allocate(4 * 3) //must be multiple of 4 for floats
+    val floatBuffer =  byteBuffer.asFloatBuffer()
+    that.foreach { d3 =>
+      Seq(d3._1, d3._2, d3._3).foreach(d => floatBuffer.put(d.toFloat))
       fc.write(byteBuffer)
       byteBuffer.rewind()
       floatBuffer.clear()

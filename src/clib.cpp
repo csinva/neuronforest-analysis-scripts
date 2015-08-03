@@ -1,4 +1,4 @@
-/* ctest.c */
+/* clib.cpp */
 #include "clib.h"
 #include <iostream>
 #include <cstdlib>

@@ -98,14 +98,14 @@ function calcGrads()
     %% grads small 3D - new
     addpath(genpath('malis/malis-turaga'));
     addpath(genpath('../neuronforest-spark/seunglab'));
-    p = ['/groups/turaga/home/singhc/analysis-scripts/malis/001/'];
+    p = ['/groups/turaga/home/singhc/analysis-scripts/malis/000/'];
     load([p 'dims.txt']);
     labels = load3D([p 'pointsArr.raw'],dims);
     preds = load3D([p 'predsArr.raw'],dims);
     segs = load3D_1([p 'segArr.raw'],dims);
-    lossesArrPos = load3D([p 'lossesPos.raw'],dims);
-    lossesArrNeg = load3D([p 'lossesNeg.raw'],dims);
-    losses= load3D([p 'losses.raw'],dims);
+%     lossesArrPos = load3D([p 'lossesPos.raw'],dims);
+%     lossesArrNeg = load3D([p 'lossesNeg.raw'],dims);
+    losses= load3D([p 'grads.raw'],dims);
     
 
     affPos = min(preds,labels);
@@ -127,8 +127,8 @@ function calcGrads()
            
     [lossesPos,loss_p,classerr_p,randIndex_p] = malis_loss_mex(single(affPos), ...
     double(-eye(3)),uint16(segs),double(.3),boolean(true));
-    
     randIndex_p
+    
     [lossesNeg,loss,classerr,randIndex_n] = malis_loss_mex(single(affNeg), ...
     double(-eye(3)),uint16(segs),double(.3),boolean(false));
     randIndex_n
@@ -140,8 +140,8 @@ function calcGrads()
 %                                                 false);
 %     BrowseComponents('ii',lossesPos,lossesNeg);
 %       BrowseComponents('iici',labels,preds,segs,lossesPos+lossesNeg);
-% BrowseComponents('ciii',segs,labels,preds>.5,losses(:,:,:,3));
-BrowseComponents('ii',lossesArrPos(:,:,:,2),lossesArrNeg(:,:,:,2));
+ BrowseComponents('ciii',segs,labels,preds,losses(:,:,:,1));
+% BrowseComponents('ii',lossesArrPos(:,:,:,2),lossesArrNeg(:,:,:,2));
 %BrowseComponents('iii',labels,preds,losses(:,:,:,1));
 end
 
