@@ -5,8 +5,9 @@ import java.util.{Date, Calendar}
 import breeze.linalg.{sum, reshape, max, min}
 import com.sun.jna.{Library, Native}
 import main.scala.CLib.CTestJava
-import main.scala.{DoubleTuple, CLib, ClibLibrary}
-import main.scala.DoubleTuple
+import main.scala._
+import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.rdd.RDD
 import org.bridj.Pointer
 import org.bridj.Pointer._
 import org.bridj.ann.Ptr
@@ -20,11 +21,21 @@ object Main {
       def helloFromC
       def malisLoss(@Ptr dims: Long, @Ptr conn: Long, @Ptr nhood: Long, @Ptr seg: Long, margin: Double, pos: Boolean,
                     @Ptr losses: Long, @Ptr loss: Long, @Ptr randIndex: Long)
+      def arrTest(testNum: Int)
     }
 
     try {
-      val clib: CLibScala = Native.loadLibrary("/groups/turaga/home/singhc/analysis-scripts/src/clib.so",classOf[CLibScala]).asInstanceOf[CLibScala]
+      val clibOne: CLibScala = Native.loadLibrary("/groups/turaga/home/singhc/analysis-scripts/src/clib.so",classOf[CLibScala]).asInstanceOf[CLibScala]
+      val conf = new SparkConf().setAppName("Hello").set("spark.shuffle.spill", "false").set("spark.logConf", "true")
+      conf.setMaster("local[1]")
+      val sc = new SparkContext(conf)
+
+      val clibs:RDD[Int] = sc.parallelize(List.fill(1)(3))
+//      val clibs:RDD[CLibScala] = sc.parallelize(List.fill(1)(clibOne))
+      println("clibs size: "+clibs.partitions.size)
+      val clib: CLibScala = clibOne // clibs.first()
       clib.helloFromC
+      clib.arrTest(3)
       val ss = 78
       //this makes the assumption of nearest neighbors
       val dimsList:Array[Int] =Array(ss,ss,ss,3)

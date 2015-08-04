@@ -29,8 +29,8 @@ extern "C"
     }
 
     int arrTest(int size){
-        cout << "arrTest" << endl;
-        cout << "size: " << size << endl;
+//        cout << "arrTest" << endl;
+//        cout << "size: " << size << endl;
         return size;
     }
     int arrDouble(int* arr, int* arr2, int size){
