@@ -8,7 +8,6 @@ dataSmall
 *.raw
 *Defs.cpp
 out
-lib
 .idea
 *.iml
 */build

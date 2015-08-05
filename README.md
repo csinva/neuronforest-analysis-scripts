@@ -17,7 +17,7 @@ java -jar jnaerator.jar -library Test Test.h -o . -v -noJar -noComp
 Include it as a lib in the lib folder.
 
 If you're in the top directory:
-java -jar jnaFull.jar main/cpp/clib.h -v -noJar -noComp -package main.java  -f -convertBodies -forceNames -runtime BridJ
+java -jar ../lib/jnaerator.jar main/cpp/clib.h -v -noJar -noComp -package main.java  -f -convertBodies -forceNames -runtime BridJ
 
 **Compliling clib**
 In the src directory:
