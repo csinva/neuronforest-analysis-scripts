@@ -17,9 +17,9 @@ java -jar jnaerator.jar -library Test Test.h -o . -v -noJar -noComp
 Include it as a lib in the lib folder.
 
 If you're in the top directory:
-java -jar jnaFull.jar clib.h -v -noJar -noComp -package main.scala  -f -convertBodies -forceNames -runtime BridJ
+java -jar jnaFull.jar main/cpp/clib.h -v -noJar -noComp -package main.java  -f -convertBodies -forceNames -runtime BridJ
 
 **Compliling clib**
 In the src directory:
-g++ -Wall -shared -fPIC -o clib.so clib.cpp
+g++ -Wall -shared -fPIC -o main/cpp/clib.so main/cpp/clib.cpp
 (libctest.so must be under src)

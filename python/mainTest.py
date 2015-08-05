@@ -10,7 +10,7 @@ from waterDefs import markerWatershed
 from randStats import randIndex
 import time
 t0 = time.clock()
-dataRoot = 'dataSmall/000'
+dataRoot = '../dataSmall/000'
 dims = [73,73,73]
 affTrue, affEst = loadAffs(dataRoot,dims)
 affTrue = affTrue.astype(dtype='d',order='F')

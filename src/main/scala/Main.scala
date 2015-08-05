@@ -4,7 +4,7 @@ import java.nio.{FloatBuffer, ByteBuffer}
 import java.util.{Date, Calendar}
 import breeze.linalg.{sum, reshape, max, min}
 import com.sun.jna.{Library, Native}
-import main.scala.CLib.CTestJava
+//import main.scala.CLib.CTestJava
 import main.scala._
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.rdd.RDD
@@ -25,7 +25,7 @@ object Main {
     }
 
     try {
-      val clibOne: CLibScala = Native.loadLibrary("/groups/turaga/home/singhc/analysis-scripts/src/clib.so",classOf[CLibScala]).asInstanceOf[CLibScala]
+      val clibOne: CLibScala = Native.loadLibrary("/groups/turaga/home/singhc/analysis-scripts/src/main/cpp/clib.so",classOf[CLibScala]).asInstanceOf[CLibScala]
       val conf = new SparkConf().setAppName("Hello").set("spark.shuffle.spill", "false").set("spark.logConf", "true")
       conf.setMaster("local[1]")
       val sc = new SparkContext(conf)
