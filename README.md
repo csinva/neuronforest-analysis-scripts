@@ -4,10 +4,10 @@ Scripts to increase accuracy and speed of image segmentation evaluation and mali
 **Descriptions of Directories**
 
 Note: Each major directory contains its own README.
-1. python: Contains python scripts and cython wrappers for C++ methods to calculate and visualize statistics from an image segmentation algorithm.
-2. matscripts: Contains matlab code to compare against python for calculating and visualizing statistics.
-3. src: Contains code for calculating the MALIS training objective using wrappers for C++ code.
-4. launchScripts: Scripts for starting a spark job on the Janelia cluster.
+* python: Contains python scripts and cython wrappers for C++ methods to calculate and visualize statistics from an image segmentation algorithm.
+* matscripts: Contains matlab code to compare against python for calculating and visualizing statistics.
+* src: Contains code for calculating the MALIS training objective using wrappers for C++ code.
+* launchScripts: Scripts for starting a spark job on the Janelia cluster.
 
 **Cloning The Repo**
 
