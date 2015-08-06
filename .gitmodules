@@ -1,0 +1,3 @@
+[submodule "matscripts/seunglab"]
+	path = matscripts/seunglab
+	url = https://github.com/srinituraga/seunglab.git

@@ -22,4 +22,5 @@ java -jar ../lib/jnaerator.jar main/cpp/clib.h -v -noJar -noComp -package main.j
 **Compliling clib**
 In the src directory:
 g++ -Wall -shared -fPIC -o main/cpp/clib.so main/cpp/clib.cpp
-(libctest.so must be under src)
+
+chmod +rwx file.sh
