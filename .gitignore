@@ -1,5 +1,4 @@
 matscripts
-testData
 *~
 *pyc
 data
@@ -13,3 +12,4 @@ out
 */build
 */*.c
 */*.nfs*
+*.jar

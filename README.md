@@ -1,26 +1,24 @@
 # neuronforest-analysis-scripts
-Python scripts to replace Matlab for evaluation of error in connectome images and affinity graphs.
+Scripts to increase accuracy and speed of image segmentation evaluation and malis training objective calculation for affinity graphs of connectomes.  Intended for use with https://github.com/csinva/neuronforest-spark 
 
-**Building cpp methods**
-In order to build all the cpp files into workable python modules, run the cythonBuild.sh script.
+**Descriptions of Directories**
 
-**Setting Up Spark**
-Download and save a spark binary.  Make sure your python path points to it.
-Make sure your JAVA_HOME points to a valid jdk.
+Note: Each major directory contains its own README.
+1. python: Contains python scripts and cython wrappers for C++ methods to calculate and visualize statistics from an image segmentation algorithm.
+2. matscripts: Contains matlab code to compare against python for calculating and visualizing statistics.
+3. src: Contains code for calculating the MALIS training objective using wrappers for C++ code.
+4. launchScripts: Scripts for starting a spark job on the Janelia cluster.
 
-**Setting Up Bridj**
-Download the Bridj jar from http://search.maven.org/#artifactdetails|com.nativelibs4java|bridj|0.7.0|bundle and include it as a library in the lib folder.
+**Cloning The Repo**
 
-**Setting Up JNA**
-Download jnaerator.jar (get a version with -shaded) and run the following on C++ files:
-java -jar jnaerator.jar -library Test Test.h -o . -v -noJar -noComp
-Include it as a lib in the lib folder.
+To get all files for matlab, use ```git clone --recursive``` when cloning the repo.
 
-If you're in the top directory:
-java -jar ../lib/jnaerator.jar main/cpp/clib.h -v -noJar -noComp -package main.java  -f -convertBodies -forceNames -runtime BridJ
+**Dependencies**
 
-**Compliling clib**
-In the src directory:
-g++ -Wall -shared -fPIC -o main/cpp/clib.so main/cpp/clib.cpp
+This project requires Java SDK (reccomended 1.7), Scala SDK (reccomended 2.10), and Apache Spark to be installed.  IntelliJ is reccomended for development.  In order to add libraries to IntelliJ, put jar files into the *lib* directory, right click them, and click *Add as Library*.  Do the same for the jar files that are already in the *lib* folder.
 
-chmod +rwx file.sh
+**Compiling and Running**
+
+There are separate bash files for compiling different parts of the project.  If any give a *Permission Denied* error, cd into the containing direcory and type ```chmod +rwx file.sh```.
+
+In order to run on the Janelia Cluster, see instructions at https://github.com/csinva/neuronforest-spark 

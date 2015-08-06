@@ -1,3 +1,6 @@
 [submodule "matscripts/seunglab"]
 	path = matscripts/seunglab
 	url = https://github.com/srinituraga/seunglab.git
+[submodule "src/main/matlab/malisMex"]
+	path = src/main/matlab/malisMex
+	url = https://github.com/srinituraga/malis.git

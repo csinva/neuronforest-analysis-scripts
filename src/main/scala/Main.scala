@@ -4,7 +4,6 @@ import java.nio.{FloatBuffer, ByteBuffer}
 import java.util.{Date, Calendar}
 import breeze.linalg.{sum, reshape, max, min}
 import com.sun.jna.{Library, Native}
-//import main.scala.CLib.CTestJava
 import main.scala._
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.rdd.RDD
@@ -12,7 +11,7 @@ import org.bridj.Pointer
 import org.bridj.Pointer._
 import org.bridj.ann.Ptr
 
-
+//Tests calling MALIS from Scala
 object Main {
 
   def main(args:Array[String]): Unit = {
@@ -25,6 +24,7 @@ object Main {
     }
 
     try {
+
       val clibOne: CLibScala = Native.loadLibrary("/groups/turaga/home/singhc/analysis-scripts/src/main/cpp/clib.so",classOf[CLibScala]).asInstanceOf[CLibScala]
       val conf = new SparkConf().setAppName("Hello").set("spark.shuffle.spill", "false").set("spark.logConf", "true")
       conf.setMaster("local[1]")
@@ -37,6 +37,9 @@ object Main {
       clib.helloFromC
       clib.arrTest(3)
       val ss = 78
+
+
+
       //this makes the assumption of nearest neighbors
       val dimsList:Array[Int] =Array(ss,ss,ss,3)
       def identity(x:Int,y:Int):Double = if(x==y) 1 else 0
@@ -44,13 +47,13 @@ object Main {
       val NUM3 = NUM*3
 
       //load things
-      val predArr:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/malis/001/predsArr.raw") //saved as x,y,z
-      val labelArr:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/malis/001/pointsArr.raw")  //saved as x,y,z
-      val seg:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/malis/001/segArr.raw") //this errors if it is lower
+      val predArr:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/testData/malis/predsArr.raw") //saved as x,y,z
+      val labelArr:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/testData/malis/pointsArr.raw")  //saved as x,y,z
+      val seg:Array[Float] = loadFeatures("/groups/turaga/home/singhc/analysis-scripts/testData/malis/segArr.raw") //this errors if it is lower
       val affPos:Array[Float] = min(predArr,labelArr)
       val affNeg:Array[Float] = max(predArr,labelArr)
 
-      //inputs - todo: make these assignments all done with map
+      //inputs
       val margin:Double = .3
       val pos:Boolean = true
       val neg:Boolean = false
@@ -66,7 +69,7 @@ object Main {
       for(i<-0 until 3;j<-0 until 3)
         nhood(i*3+j)= -identity(i,j)
 
-      //order everything in Fortran Order -todo: do this is the c++
+      //order everything in Fortran Order - todo: do this is the c++
       for(x<-0 until ss;y<-0 until ss;z<-0 until ss){
         segC(z*ss*ss + y * ss + x ) = seg(x * ss * ss + y * ss + z).toInt
         for (i <- 0 until 3) {
@@ -110,10 +113,10 @@ object Main {
       }
       println("total loss: "+loss)
 
-      save3D("malis/001","lossesPos.raw",gradsArrPos,(ss,ss,ss))
-      save3D("malis/001","lossesNeg.raw",gradsArrNeg,(ss,ss,ss))
-      save3D("malis/001","losses.raw",gradsArr,(ss,ss,ss))
-      save3DTuple("malis/001","gradTuples.raw",grads,(ss,ss,ss))
+      save3D("testData/malis","lossesPos.raw",gradsArrPos,(ss,ss,ss))
+      save3D("testData/malis","lossesNeg.raw",gradsArrNeg,(ss,ss,ss))
+      save3D("testData/malis","losses.raw",gradsArr,(ss,ss,ss))
+      save3DTuple("testData/malis","gradTuples.raw",grads,(ss,ss,ss))
 
     } catch {
       case e:Throwable =>

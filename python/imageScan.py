@@ -2,15 +2,11 @@
 # associated affinity graphs
 
 import os
-import time
 import matplotlib.cm as cm
 import numpy as np
-import pylab
 from matplotlib.widgets import Slider, Button, RadioButtons
 import matplotlib.pyplot as plt
 import h5py
-
-#from analysis import *
 
 
 ## Just to access the images...

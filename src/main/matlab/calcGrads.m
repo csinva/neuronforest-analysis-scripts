@@ -96,16 +96,16 @@ function calcGrads()
     BrowseComponents('iiii',labels,g(:,:,:,1),g(:,:,:,2),g(:,:,:,3));
     %}
     %% grads small 3D - new
-    addpath(genpath('malis/malis-turaga'));
-    addpath(genpath('../neuronforest-spark/seunglab'));
-    p = ['/groups/turaga/home/singhc/analysis-scripts/malis/000/'];
+    addpath(genpath('malisMex/matlab'));
+    addpath(genpath('/groups/turaga/home/singhc/analysis-scripts/matscripts/seunglab'));
+    p = ['/groups/turaga/home/singhc/analysis-scripts/testData/malis/'];
     load([p 'dims.txt']);
     labels = load3D([p 'pointsArr.raw'],dims);
     preds = load3D([p 'predsArr.raw'],dims);
     segs = load3D_1([p 'segArr.raw'],dims);
 %     lossesArrPos = load3D([p 'lossesPos.raw'],dims);
 %     lossesArrNeg = load3D([p 'lossesNeg.raw'],dims);
-    losses= load3D([p 'grads.raw'],dims);
+%     losses= load3D([p 'grads.raw'],dims);
     
 
     affPos = min(preds,labels);
@@ -140,7 +140,7 @@ function calcGrads()
 %                                                 false);
 %     BrowseComponents('ii',lossesPos,lossesNeg);
 %       BrowseComponents('iici',labels,preds,segs,lossesPos+lossesNeg);
- BrowseComponents('ciii',segs,labels,preds,losses(:,:,:,1));
+ BrowseComponents('cii',segs,labels,preds);
 % BrowseComponents('ii',lossesArrPos(:,:,:,2),lossesArrNeg(:,:,:,2));
 %BrowseComponents('iii',labels,preds,losses(:,:,:,1));
 end

@@ -640,8 +640,8 @@ static PyObject *__pyx_codeobj__4;
 /* "pixelStats.pyx":2
  * import numpy as np
  * def pixelSquareError(affTrue,affEst):             # <<<<<<<<<<<<<<
- *   affTrue = affTrue.flatten()
- *   affEst = affEst.flatten()
+ *     affTrue = affTrue.flatten()
+ *     affEst = affEst.flatten()
  */
 
 /* Python wrapper */
@@ -728,9 +728,9 @@ static PyObject *__pyx_pf_10pixelStats_pixelSquareError(CYTHON_UNUSED PyObject *
   /* "pixelStats.pyx":3
  * import numpy as np
  * def pixelSquareError(affTrue,affEst):
- *   affTrue = affTrue.flatten()             # <<<<<<<<<<<<<<
- *   affEst = affEst.flatten()
- *   cdef double err
+ *     affTrue = affTrue.flatten()             # <<<<<<<<<<<<<<
+ *     affEst = affEst.flatten()
+ *     cdef double err
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_affTrue, __pyx_n_s_flatten); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 3; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -757,10 +757,10 @@ static PyObject *__pyx_pf_10pixelStats_pixelSquareError(CYTHON_UNUSED PyObject *
 
   /* "pixelStats.pyx":4
  * def pixelSquareError(affTrue,affEst):
- *   affTrue = affTrue.flatten()
- *   affEst = affEst.flatten()             # <<<<<<<<<<<<<<
- *   cdef double err
- *   err = np.dot((affEst-affTrue).transpose(),(affEst-affTrue)) / len(affEst)
+ *     affTrue = affTrue.flatten()
+ *     affEst = affEst.flatten()             # <<<<<<<<<<<<<<
+ *     cdef double err
+ *     err = np.dot((affEst-affTrue).transpose(),(affEst-affTrue)) / len(affEst)
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_affEst, __pyx_n_s_flatten); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 4; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -786,10 +786,10 @@ static PyObject *__pyx_pf_10pixelStats_pixelSquareError(CYTHON_UNUSED PyObject *
   __pyx_t_1 = 0;
 
   /* "pixelStats.pyx":6
- *   affEst = affEst.flatten()
- *   cdef double err
- *   err = np.dot((affEst-affTrue).transpose(),(affEst-affTrue)) / len(affEst)             # <<<<<<<<<<<<<<
- *   return err
+ *     affEst = affEst.flatten()
+ *     cdef double err
+ *     err = np.dot((affEst-affTrue).transpose(),(affEst-affTrue)) / len(affEst)             # <<<<<<<<<<<<<<
+ *     return err
  * 
  */
   __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 6; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -861,9 +861,9 @@ static PyObject *__pyx_pf_10pixelStats_pixelSquareError(CYTHON_UNUSED PyObject *
   __pyx_v_err = __pyx_t_8;
 
   /* "pixelStats.pyx":7
- *   cdef double err
- *   err = np.dot((affEst-affTrue).transpose(),(affEst-affTrue)) / len(affEst)
- *   return err             # <<<<<<<<<<<<<<
+ *     cdef double err
+ *     err = np.dot((affEst-affTrue).transpose(),(affEst-affTrue)) / len(affEst)
+ *     return err             # <<<<<<<<<<<<<<
  * 
  * def pixelStatsForThreshold(affTrue,affEst,threshold):
  */
@@ -877,8 +877,8 @@ static PyObject *__pyx_pf_10pixelStats_pixelSquareError(CYTHON_UNUSED PyObject *
   /* "pixelStats.pyx":2
  * import numpy as np
  * def pixelSquareError(affTrue,affEst):             # <<<<<<<<<<<<<<
- *   affTrue = affTrue.flatten()
- *   affEst = affEst.flatten()
+ *     affTrue = affTrue.flatten()
+ *     affEst = affEst.flatten()
  */
 
   /* function exit code */
@@ -900,11 +900,11 @@ static PyObject *__pyx_pf_10pixelStats_pixelSquareError(CYTHON_UNUSED PyObject *
 }
 
 /* "pixelStats.pyx":9
- *   return err
+ *     return err
  * 
  * def pixelStatsForThreshold(affTrue,affEst,threshold):             # <<<<<<<<<<<<<<
- *   affTrue = affTrue.flatten()
- *   affEst = affEst.flatten()
+ *     affTrue = affTrue.flatten()
+ *     affEst = affEst.flatten()
  */
 
 /* Python wrapper */
@@ -1007,9 +1007,9 @@ static PyObject *__pyx_pf_10pixelStats_2pixelStatsForThreshold(CYTHON_UNUSED PyO
   /* "pixelStats.pyx":10
  * 
  * def pixelStatsForThreshold(affTrue,affEst,threshold):
- *   affTrue = affTrue.flatten()             # <<<<<<<<<<<<<<
- *   affEst = affEst.flatten()
- *   cdef double p_err,p_tp,p_fp,p_pos,p_neg
+ *     affTrue = affTrue.flatten()             # <<<<<<<<<<<<<<
+ *     affEst = affEst.flatten()
+ *     cdef double p_err,p_tp,p_fp,p_pos,p_neg
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_affTrue, __pyx_n_s_flatten); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -1036,10 +1036,10 @@ static PyObject *__pyx_pf_10pixelStats_2pixelStatsForThreshold(CYTHON_UNUSED PyO
 
   /* "pixelStats.pyx":11
  * def pixelStatsForThreshold(affTrue,affEst,threshold):
- *   affTrue = affTrue.flatten()
- *   affEst = affEst.flatten()             # <<<<<<<<<<<<<<
- *   cdef double p_err,p_tp,p_fp,p_pos,p_neg
- *   p_err = 1-np.sum((affEst>threshold)==affTrue)/((float)(len(affEst)))
+ *     affTrue = affTrue.flatten()
+ *     affEst = affEst.flatten()             # <<<<<<<<<<<<<<
+ *     cdef double p_err,p_tp,p_fp,p_pos,p_neg
+ *     p_err = 1-np.sum((affEst>threshold)==affTrue)/((float)(len(affEst)))
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_affEst, __pyx_n_s_flatten); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 11; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -1065,11 +1065,11 @@ static PyObject *__pyx_pf_10pixelStats_2pixelStatsForThreshold(CYTHON_UNUSED PyO
   __pyx_t_1 = 0;
 
   /* "pixelStats.pyx":13
- *   affEst = affEst.flatten()
- *   cdef double p_err,p_tp,p_fp,p_pos,p_neg
- *   p_err = 1-np.sum((affEst>threshold)==affTrue)/((float)(len(affEst)))             # <<<<<<<<<<<<<<
- *   p_tp = np.sum(np.logical_and(affEst>threshold,affTrue))
- *   p_fp = np.sum(np.logical_and(affEst>threshold,np.logical_not(affTrue)))
+ *     affEst = affEst.flatten()
+ *     cdef double p_err,p_tp,p_fp,p_pos,p_neg
+ *     p_err = 1-np.sum((affEst>threshold)==affTrue)/((float)(len(affEst)))             # <<<<<<<<<<<<<<
+ *     p_tp = np.sum(np.logical_and(affEst>threshold,affTrue))
+ *     p_fp = np.sum(np.logical_and(affEst>threshold,np.logical_not(affTrue)))
  */
   __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -1120,11 +1120,11 @@ static PyObject *__pyx_pf_10pixelStats_2pixelStatsForThreshold(CYTHON_UNUSED PyO
   __pyx_v_p_err = __pyx_t_7;
 
   /* "pixelStats.pyx":14
- *   cdef double p_err,p_tp,p_fp,p_pos,p_neg
- *   p_err = 1-np.sum((affEst>threshold)==affTrue)/((float)(len(affEst)))
- *   p_tp = np.sum(np.logical_and(affEst>threshold,affTrue))             # <<<<<<<<<<<<<<
- *   p_fp = np.sum(np.logical_and(affEst>threshold,np.logical_not(affTrue)))
- *   p_pos = np.sum(affTrue)
+ *     cdef double p_err,p_tp,p_fp,p_pos,p_neg
+ *     p_err = 1-np.sum((affEst>threshold)==affTrue)/((float)(len(affEst)))
+ *     p_tp = np.sum(np.logical_and(affEst>threshold,affTrue))             # <<<<<<<<<<<<<<
+ *     p_fp = np.sum(np.logical_and(affEst>threshold,np.logical_not(affTrue)))
+ *     p_pos = np.sum(affTrue)
  */
   __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
@@ -1195,11 +1195,11 @@ static PyObject *__pyx_pf_10pixelStats_2pixelStatsForThreshold(CYTHON_UNUSED PyO
   __pyx_v_p_tp = __pyx_t_7;
 
   /* "pixelStats.pyx":15
- *   p_err = 1-np.sum((affEst>threshold)==affTrue)/((float)(len(affEst)))
- *   p_tp = np.sum(np.logical_and(affEst>threshold,affTrue))
- *   p_fp = np.sum(np.logical_and(affEst>threshold,np.logical_not(affTrue)))             # <<<<<<<<<<<<<<
- *   p_pos = np.sum(affTrue)
- *   p_neg = np.sum(np.logical_not(affTrue))
+ *     p_err = 1-np.sum((affEst>threshold)==affTrue)/((float)(len(affEst)))
+ *     p_tp = np.sum(np.logical_and(affEst>threshold,affTrue))
+ *     p_fp = np.sum(np.logical_and(affEst>threshold,np.logical_not(affTrue)))             # <<<<<<<<<<<<<<
+ *     p_pos = np.sum(affTrue)
+ *     p_neg = np.sum(np.logical_not(affTrue))
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -1300,11 +1300,11 @@ static PyObject *__pyx_pf_10pixelStats_2pixelStatsForThreshold(CYTHON_UNUSED PyO
   __pyx_v_p_fp = __pyx_t_7;
 
   /* "pixelStats.pyx":16
- *   p_tp = np.sum(np.logical_and(affEst>threshold,affTrue))
- *   p_fp = np.sum(np.logical_and(affEst>threshold,np.logical_not(affTrue)))
- *   p_pos = np.sum(affTrue)             # <<<<<<<<<<<<<<
- *   p_neg = np.sum(np.logical_not(affTrue))
- *   return p_err,p_tp,p_fp,p_pos,p_neg
+ *     p_tp = np.sum(np.logical_and(affEst>threshold,affTrue))
+ *     p_fp = np.sum(np.logical_and(affEst>threshold,np.logical_not(affTrue)))
+ *     p_pos = np.sum(affTrue)             # <<<<<<<<<<<<<<
+ *     p_neg = np.sum(np.logical_not(affTrue))
+ *     return p_err,p_tp,p_fp,p_pos,p_neg
  */
   __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_9);
@@ -1341,10 +1341,10 @@ static PyObject *__pyx_pf_10pixelStats_2pixelStatsForThreshold(CYTHON_UNUSED PyO
   __pyx_v_p_pos = __pyx_t_7;
 
   /* "pixelStats.pyx":17
- *   p_fp = np.sum(np.logical_and(affEst>threshold,np.logical_not(affTrue)))
- *   p_pos = np.sum(affTrue)
- *   p_neg = np.sum(np.logical_not(affTrue))             # <<<<<<<<<<<<<<
- *   return p_err,p_tp,p_fp,p_pos,p_neg
+ *     p_fp = np.sum(np.logical_and(affEst>threshold,np.logical_not(affTrue)))
+ *     p_pos = np.sum(affTrue)
+ *     p_neg = np.sum(np.logical_not(affTrue))             # <<<<<<<<<<<<<<
+ *     return p_err,p_tp,p_fp,p_pos,p_neg
  */
   __pyx_t_11 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_11);
@@ -1412,9 +1412,9 @@ static PyObject *__pyx_pf_10pixelStats_2pixelStatsForThreshold(CYTHON_UNUSED PyO
   __pyx_v_p_neg = __pyx_t_7;
 
   /* "pixelStats.pyx":18
- *   p_pos = np.sum(affTrue)
- *   p_neg = np.sum(np.logical_not(affTrue))
- *   return p_err,p_tp,p_fp,p_pos,p_neg             # <<<<<<<<<<<<<<
+ *     p_pos = np.sum(affTrue)
+ *     p_neg = np.sum(np.logical_not(affTrue))
+ *     return p_err,p_tp,p_fp,p_pos,p_neg             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_3 = PyFloat_FromDouble(__pyx_v_p_err); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 18; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -1449,11 +1449,11 @@ static PyObject *__pyx_pf_10pixelStats_2pixelStatsForThreshold(CYTHON_UNUSED PyO
   goto __pyx_L0;
 
   /* "pixelStats.pyx":9
- *   return err
+ *     return err
  * 
  * def pixelStatsForThreshold(affTrue,affEst,threshold):             # <<<<<<<<<<<<<<
- *   affTrue = affTrue.flatten()
- *   affEst = affEst.flatten()
+ *     affTrue = affTrue.flatten()
+ *     affEst = affEst.flatten()
  */
 
   /* function exit code */
@@ -1537,8 +1537,8 @@ static int __Pyx_InitCachedConstants(void) {
   /* "pixelStats.pyx":2
  * import numpy as np
  * def pixelSquareError(affTrue,affEst):             # <<<<<<<<<<<<<<
- *   affTrue = affTrue.flatten()
- *   affEst = affEst.flatten()
+ *     affTrue = affTrue.flatten()
+ *     affEst = affEst.flatten()
  */
   __pyx_tuple_ = PyTuple_Pack(3, __pyx_n_s_affTrue, __pyx_n_s_affEst, __pyx_n_s_err); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple_);
@@ -1546,11 +1546,11 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_groups_turaga_home_singhc_analy, __pyx_n_s_pixelSquareError, 2, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "pixelStats.pyx":9
- *   return err
+ *     return err
  * 
  * def pixelStatsForThreshold(affTrue,affEst,threshold):             # <<<<<<<<<<<<<<
- *   affTrue = affTrue.flatten()
- *   affEst = affEst.flatten()
+ *     affTrue = affTrue.flatten()
+ *     affEst = affEst.flatten()
  */
   __pyx_tuple__3 = PyTuple_Pack(8, __pyx_n_s_affTrue, __pyx_n_s_affEst, __pyx_n_s_threshold, __pyx_n_s_p_err, __pyx_n_s_p_tp, __pyx_n_s_p_fp, __pyx_n_s_p_pos, __pyx_n_s_p_neg); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 9; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__3);
@@ -1659,7 +1659,7 @@ PyMODINIT_FUNC PyInit_pixelStats(void)
   /* "pixelStats.pyx":1
  * import numpy as np             # <<<<<<<<<<<<<<
  * def pixelSquareError(affTrue,affEst):
- *   affTrue = affTrue.flatten()
+ *     affTrue = affTrue.flatten()
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -1669,8 +1669,8 @@ PyMODINIT_FUNC PyInit_pixelStats(void)
   /* "pixelStats.pyx":2
  * import numpy as np
  * def pixelSquareError(affTrue,affEst):             # <<<<<<<<<<<<<<
- *   affTrue = affTrue.flatten()
- *   affEst = affEst.flatten()
+ *     affTrue = affTrue.flatten()
+ *     affEst = affEst.flatten()
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10pixelStats_1pixelSquareError, NULL, __pyx_n_s_pixelStats); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -1678,11 +1678,11 @@ PyMODINIT_FUNC PyInit_pixelStats(void)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "pixelStats.pyx":9
- *   return err
+ *     return err
  * 
  * def pixelStatsForThreshold(affTrue,affEst,threshold):             # <<<<<<<<<<<<<<
- *   affTrue = affTrue.flatten()
- *   affEst = affEst.flatten()
+ *     affTrue = affTrue.flatten()
+ *     affEst = affEst.flatten()
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10pixelStats_3pixelStatsForThreshold, NULL, __pyx_n_s_pixelStats); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 9; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -1692,7 +1692,7 @@ PyMODINIT_FUNC PyInit_pixelStats(void)
   /* "pixelStats.pyx":1
  * import numpy as np             # <<<<<<<<<<<<<<
  * def pixelSquareError(affTrue,affEst):
- *   affTrue = affTrue.flatten()
+ *     affTrue = affTrue.flatten()
  */
   __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);

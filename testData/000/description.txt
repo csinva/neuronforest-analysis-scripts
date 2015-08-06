@@ -1,0 +1,29 @@
+RunSettings:
+ name = expt
+ numExecutors = 30
+ maxMemoryInMB = 500
+ data_root = /nobackup/turaga/singhc/med-data/
+ save_to = /groups/turaga/home/singhc/neuronforest-spark/mnt/predictions
+ save_model_to = /groups/turaga/home/singhc/neuronforest-spark/mnt/models
+ train_subvolumes = List(small2/0/split_333/000, small2/0/split_333/001, small2/0/split_333/002, small2/0/split_333/010, small2/0/split_333/011, small2/0/split_333/012, small2/0/split_333/020, small2/0/split_333/021, small2/0/split_333/022, small2/0/split_333/100, small2/0/split_333/101, small2/0/split_333/102, small2/0/split_333/110, small2/0/split_333/111, small2/0/split_333/112, small2/0/split_333/120, small2/0/split_333/121, small2/0/split_333/122, small2/0/split_333/200, small2/0/split_333/201, small2/0/split_333/202, small2/0/split_333/210, small2/0/split_333/211, small2/0/split_333/212, small2/0/split_333/220, small2/0/split_333/221, small2/0/split_333/222)
+ test_subvolumes = List(small1/0/split_333/000, small1/0/split_333/001, small1/0/split_333/002, small1/0/split_333/010, small1/0/split_333/011, small1/0/split_333/012, small1/0/split_333/020, small1/0/split_333/021, small1/0/split_333/022, small1/0/split_333/100, small1/0/split_333/101, small1/0/split_333/102, small1/0/split_333/110, small1/0/split_333/111, small1/0/split_333/112, small1/0/split_333/120, small1/0/split_333/121, small1/0/split_333/122, small1/0/split_333/200, small1/0/split_333/201, small1/0/split_333/202, small1/0/split_333/210, small1/0/split_333/211, small1/0/split_333/212, small1/0/split_333/220, small1/0/split_333/221, small1/0/split_333/222)
+ featureSubsetStrategy = all
+ maxDepth = 10
+ maxBins = 10
+ nBaseFeatures = 40
+ initialModel = InitialTrainModel(1)
+ treesPerIteration = 10
+ baseFeaturesAndOffsets: count = 320; values = {(0,(-5,-5,-5)), (0,(-5,-5,0)), (0,(-5,0,-5)), (0,(-5,0,0)), (0,(0,-5,-5)), (0,(0,-5,0)), (0,(0,0,-5)), (0,(0,0,0)), (1,(-5,-5,-5)), (1,(-5,-5,0)), ...}
+ master = spark://h03u03.int.janelia.org:7077
+ learningRate = 1.0
+ iterations = 0
+ saveGradients = false
+ testPartialModels = ArraySeq()
+ testDepths = (IGNORED!) ArraySeq()
+ useNodeIdCache = true
+ bagging = 0.5
+ subsampleProportion = 1.0
+ momentum = 0.0
+ seed = 1
+ leafSize = 1
+Training took 0 minutes.

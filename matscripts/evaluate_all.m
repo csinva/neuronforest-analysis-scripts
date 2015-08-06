@@ -1,5 +1,5 @@
 addpath(genpath('seunglab'));
-rot = '../data';
+rot = '../testData';
 splits = dir(rot);
 a = {};
 for l=3:length(splits)

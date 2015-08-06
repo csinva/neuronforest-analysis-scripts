@@ -1,4 +1,4 @@
-package main.java;
+package java;
 import org.bridj.BridJ;
 import org.bridj.CRuntime;
 import org.bridj.Pointer;

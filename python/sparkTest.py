@@ -1,3 +1,5 @@
+#Not working - attempt to parallelize calculations with spark
+
 """SimpleApp.py"""
 from pyspark import SparkContext
 
